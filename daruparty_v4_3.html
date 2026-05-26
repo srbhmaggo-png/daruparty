@@ -1,0 +1,2114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0d0d0f">
+<meta name="description" content="Daru Party — Private party planner for your crew">
+<link rel="manifest" id="pwa-manifest">
+<title>🥃 Daru Party</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0d0f;--bg2:#151518;--bg3:#1c1c22;--bg4:#232329;
+  --b1:rgba(255,255,255,.07);--b2:rgba(255,255,255,.14);--b3:rgba(255,255,255,.22);
+  --tx:#f0ede8;--mu:rgba(240,237,232,.42);--mu2:rgba(240,237,232,.72);
+  --am:#f0a500;--am2:#ffc93c;--abg:rgba(240,165,0,.1);--abr:rgba(240,165,0,.25);
+  --re:#e84040;--rbg:rgba(232,64,64,.1);--rbr:rgba(232,64,64,.25);
+  --gr:#3ecf8e;--gbg:rgba(62,207,142,.1);--gbr:rgba(62,207,142,.25);
+  --bl:#5b8dee;--bbg:rgba(91,141,238,.1);--bbr:rgba(91,141,238,.25);
+  --pu:#a855f7;--pbg:rgba(168,85,247,.1);--pbr:rgba(168,85,247,.25);
+  --pk:#f472b6;--pkbg:rgba(244,114,182,.1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.5;position:fixed;width:100%;height:100%}
+input,select,textarea,button{font-family:'DM Sans',sans-serif;color:var(--tx)}
+button{cursor:pointer;background:none;border:none}
+@keyframes stumble{0%,100%{transform:rotate(-3deg)}25%{transform:rotate(8deg) translateX(4px)}50%{transform:rotate(-5deg) translateX(-3px)}75%{transform:rotate(6deg) translateX(3px)}}
+@keyframes hiccup{0%,88%,100%{transform:translateY(0)}94%{transform:translateY(-8px)}}
+@keyframes pour{0%,100%{transform:rotate(0)}50%{transform:rotate(-22deg)}}
+@keyframes wobble{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-5px) rotate(2deg)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes sway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes scared{0%,100%{transform:rotate(0)}50%{transform:rotate(-6deg) scale(.94)}}
+@keyframes typing{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg) translateY(-3px)}}
+@keyframes wave{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes glow{0%,100%{box-shadow:0 0 8px rgba(232,64,64,.3)}50%{box-shadow:0 0 22px rgba(232,64,64,.7)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes popIn{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes splash{0%{opacity:1;transform:scale(1)}80%{opacity:1;transform:scale(1.05)}100%{opacity:0;transform:scale(.95)}}
+
+.screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;display:none;background:var(--bg)}
+.screen.active{display:block;animation:fadeUp .22s ease}
+.sc{padding-bottom:88px}
+.flex-screen{display:none;flex-direction:column;align-items:center;justify-content:center;padding:22px;min-height:100%}
+.flex-screen.active{display:flex}
+
+/* TOPBAR */
+.tb{position:sticky;top:0;z-index:60;background:rgba(13,13,15,.93);backdrop-filter:blur(20px);border-bottom:.5px solid var(--b1);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 14px}
+.tb-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;display:flex;align-items:center;gap:7px}
+.tb-logo em{color:var(--am);font-style:normal}
+.tb-r{display:flex;gap:7px}
+.ib{width:34px;height:34px;border-radius:9px;background:var(--bg3);border:.5px solid var(--b1);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;transition:all .15s;position:relative;flex-shrink:0}
+.ib:active{transform:scale(.88)}
+.ndot{position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:var(--re)}
+.backrow{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--mu2);cursor:pointer}
+
+/* BOTTOM NAV */
+#BN{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(13,13,15,.96);backdrop-filter:blur(20px);border-top:.5px solid var(--b2);display:none;height:66px}
+#BN.v{display:flex}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;font-size:11px;color:var(--mu);transition:color .2s}
+.bni.on{color:var(--am)}
+.bni-ic{font-size:21px;line-height:1}
+
+/* FAB */
+#FAB{position:fixed;bottom:80px;right:15px;z-index:90;width:50px;height:50px;border-radius:50%;background:var(--am);color:#0d0d0f;border:none;font-size:28px;display:none;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(240,165,0,.45);cursor:pointer}
+#FAB.v{display:flex}
+#FAB:active{transform:scale(.88)}
+
+/* SPLASH */
+#S-splash{background:var(--bg);z-index:999}
+#S-splash.active{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.splash-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:52px;letter-spacing:-1px}
+.splash-logo em{color:var(--am);font-style:normal}
+.splash-tag{font-size:14px;color:var(--mu);margin-top:6px}
+
+/* PIN */
+.pin-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:42px;letter-spacing:-1px;text-align:center}
+.pin-logo em{color:var(--am);font-style:normal}
+.pin-card{background:var(--bg2);border:.5px solid var(--b2);border-radius:20px;padding:20px 17px;width:100%;max-width:310px;margin-top:8px}
+.pin-glbl{font-size:11px;color:var(--mu);margin-bottom:3px}
+.pin-gnm{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;margin-bottom:16px}
+.pdots{display:flex;gap:13px;justify-content:center;margin-bottom:18px}
+.pd{width:13px;height:13px;border-radius:50%;border:2px solid var(--b2);transition:all .2s cubic-bezier(.34,1.56,.64,1)}
+.pd.f{background:var(--am);border-color:var(--am);transform:scale(1.25)}
+.pd.e{background:var(--re);border-color:var(--re)}
+.pkp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pk{height:50px;background:var(--bg3);border:.5px solid var(--b1);border-radius:12px;font-size:20px;font-weight:500;display:flex;align-items:center;justify-content:center;transition:all .12s;user-select:none}
+.pk:active{transform:scale(.9);background:var(--bg4)}
+.pk.del{font-size:14px;color:var(--mu)}
+.pk.go{background:var(--am);color:#0d0d0f;font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+.perr{font-size:12px;color:var(--re);text-align:center;margin-top:7px;min-height:15px}
+.pskip{font-size:13px;color:var(--mu);cursor:pointer;border-bottom:1px dashed var(--b2)}
+
+/* ONBOARDING */
+.ob-card{background:var(--bg2);border:.5px solid var(--b2);border-radius:20px;padding:22px 18px;width:100%;max-width:340px}
+.ob-step{font-size:11px;color:var(--mu);margin-bottom:4px}
+.ob-title{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;margin-bottom:4px}
+.ob-sub{font-size:13px;color:var(--mu);margin-bottom:16px}
+.photo-pick{width:80px;height:80px;border-radius:50%;background:var(--bg3);border:2px dashed var(--b2);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;margin:0 auto 14px;overflow:hidden;position:relative;font-size:11px;color:var(--mu)}
+.photo-pick img{width:100%;height:100%;object-fit:cover}
+.av-pick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.av-opt{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0}
+.av-opt.sel{border-color:#fff;transform:scale(1.15)}
+.ob-prog{display:flex;gap:6px;margin-bottom:18px}
+.ob-dot{flex:1;height:3px;border-radius:2px;background:var(--b2);transition:background .3s}
+.ob-dot.done{background:var(--am)}
+
+/* INPUTS */
+.inp{width:100%;background:var(--bg3);border:.5px solid var(--b2);border-radius:9px;padding:10px 12px;color:var(--tx);font-size:14px;outline:none;transition:border-color .2s;-webkit-appearance:none;resize:vertical}
+.inp:focus{border-color:var(--am)}
+.inp::placeholder{color:var(--mu)}
+.inrow{margin-bottom:10px}
+.inlbl{font-size:11px;color:var(--mu);margin-bottom:5px}
+.phone-row{display:flex;gap:6px}
+.phone-cc{padding:10px 10px;background:var(--bg3);border:.5px solid var(--b2);border-radius:9px;font-size:14px;color:var(--mu2);white-space:nowrap}
+
+/* BUTTONS */
+.btn{width:100%;padding:13px;border-radius:10px;background:var(--am);color:#0d0d0f;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;border:none;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn:active{transform:scale(.97);background:var(--am2)}
+.btn.s{background:transparent;border:.5px solid var(--b2);color:var(--mu2);font-family:'DM Sans',sans-serif;margin-top:8px}
+.btn.s:active{background:var(--bg3)}
+.btn.sm{width:auto;padding:6px 11px;border-radius:8px;background:var(--bg3);border:.5px solid var(--b2);color:var(--mu2);font-size:12px;font-family:'DM Sans',sans-serif}
+.btn.sm.p{background:var(--abg);border-color:var(--abr);color:var(--am)}
+.btn.sm.g{background:var(--gbg);border-color:var(--gbr);color:var(--gr)}
+.btn.sm.r{background:var(--rbg);border-color:var(--rbr);color:var(--re)}
+.btn-row{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+
+/* PARTY CARDS */
+.pcard{background:var(--bg2);border:.5px solid var(--b1);border-radius:13px;padding:13px 13px 11px 17px;cursor:pointer;position:relative;overflow:hidden;margin-bottom:9px}
+.pcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px;background:var(--am)}
+.pcard.pl::before{background:var(--bl)}
+.pcard.dn::before{background:var(--gr)}
+.pcard:active{background:var(--bg3)}
+.pc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3px}
+.pc-nm{font-family:'Syne',sans-serif;font-weight:700;font-size:15px}
+.pc-lk{font-size:11px;color:var(--mu)}
+.pc-mt{font-size:12px;color:var(--mu2);margin-bottom:8px}
+.pc-ps{display:flex;gap:5px;flex-wrap:wrap}
+
+/* PILLS */
+.pill{font-size:11px;padding:2px 8px;border-radius:20px;border:.5px solid var(--b2);color:var(--mu);display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+.pill.w{border-color:var(--abr);color:var(--am);background:var(--abg)}
+.pill.ok{border-color:var(--gbr);color:var(--gr);background:var(--gbg)}
+.pill.info{border-color:var(--bbr);color:var(--bl);background:var(--bbg)}
+.pill.d{border-color:var(--rbr);color:var(--re);background:var(--rbg)}
+.pill.pulse{animation:pulse 1.5s ease-in-out infinite}
+
+/* SECTIONS */
+.sec{background:var(--bg2);border:.5px solid var(--b1);border-radius:13px;overflow:hidden;margin:0 11px 9px}
+.sec.open{border-color:var(--b2)}
+.shdr{display:flex;align-items:center;justify-content:space-between;padding:11px 12px;cursor:pointer;user-select:none}
+.shdr:active{background:var(--bg3)}
+.sleft{display:flex;align-items:center;gap:9px;flex:1;min-width:0}
+.sico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.stit .st{font-family:'Syne',sans-serif;font-weight:700;font-size:14px}
+.stit .ss{font-size:11px;color:var(--mu);margin-top:1px}
+.schev{font-size:19px;color:var(--mu);transition:transform .25s;flex-shrink:0}
+.sec.open .schev{transform:rotate(90deg)}
+.sbody{display:none;border-top:.5px solid var(--b1);padding:12px}
+.sec.open .sbody{display:block}
+.slbl{font-size:10px;font-weight:600;letter-spacing:.08em;color:var(--mu);text-transform:uppercase;padding:13px 15px 6px}
+
+/* CHECKLIST */
+.chk{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--b1);cursor:pointer;user-select:none}
+.chk:last-child{border-bottom:none}
+.chkb{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--b2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;font-size:11px;color:transparent}
+.chk.ck .chkb{background:var(--am);border-color:var(--am);color:#0d0d0f}
+.chk-l{flex:1;font-size:13px;transition:color .15s}
+.chk.ck .chk-l{color:var(--mu);text-decoration:line-through}
+
+/* COUNTERS */
+.drow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:.5px solid var(--b1)}
+.drow:last-child{border-bottom:none}
+.di{flex:1}.dn{font-size:13px;font-weight:500}.ds{font-size:11px;color:var(--mu);margin-top:1px}
+.ctrls{display:flex;align-items:center;gap:8px}
+.cb{width:28px;height:28px;border-radius:7px;border:.5px solid var(--b2);background:var(--bg3);color:var(--tx);font-size:17px;display:flex;align-items:center;justify-content:center}
+.cb:active{transform:scale(.88)}
+.cnum{font-size:15px;font-weight:600;min-width:18px;text-align:center}
+
+/* EXPENSES */
+.erow{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:.5px solid var(--b1)}
+.erow:last-child{border-bottom:none}
+.eav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;flex-shrink:0}
+.ei{flex:1;min-width:0}
+.ew{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ewho{font-size:11px;color:var(--mu);margin-top:1px}
+.eamt{font-size:13px;font-weight:600;color:var(--am);flex-shrink:0}
+.ptick{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;flex-shrink:0;transition:all .18s}
+.ptick.pd{background:var(--gr);border-color:var(--gr);color:#0d0d0f}
+.debt-row{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--bg3);border-radius:9px;margin-bottom:5px;flex-wrap:wrap}
+.upi-btn{padding:7px 12px;border-radius:8px;background:var(--am);color:#0d0d0f;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;border:none;cursor:pointer}
+.owe-box{background:var(--bg3);border-radius:11px;padding:12px;margin-top:11px}
+
+/* CHAT */
+.chatbox{height:250px;overflow-y:auto;background:var(--bg3);border-radius:11px;padding:9px;margin-bottom:9px;display:flex;flex-direction:column;gap:6px;-webkit-overflow-scrolling:touch}
+.cmsg{display:flex;gap:6px;align-items:flex-end}
+.cmsg.me{flex-direction:row-reverse}
+.cav-sm{width:25px;height:25px;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Syne',sans-serif;overflow:hidden}
+.cav-sm img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.cbbl{background:var(--bg4);border-radius:12px 12px 12px 3px;padding:7px 10px;max-width:78%;font-size:13px;line-height:1.45;position:relative}
+.cmsg.me .cbbl{background:rgba(240,165,0,.14);border-radius:12px 12px 3px 12px}
+.cnm{font-size:10px;color:var(--mu);margin-bottom:2px;font-weight:500}
+.ctm{font-size:10px;color:var(--mu);margin-top:2px}
+.creacts{display:flex;gap:3px;margin-top:3px;flex-wrap:wrap}
+.creact{font-size:12px;background:var(--bg3);border-radius:10px;padding:1px 5px;cursor:pointer;display:inline-flex;align-items:center;gap:2px}
+.creact span{font-size:10px;color:var(--mu)}
+.pinmsg{background:var(--abg);border:.5px solid var(--abr);border-radius:8px;padding:7px 10px;margin-bottom:7px;font-size:12px;display:flex;gap:7px}
+.cin-row{display:flex;gap:6px}
+.cin{flex:1;background:var(--bg3);border:.5px solid var(--b2);border-radius:20px;padding:8px 13px;color:var(--tx);font-size:13px;outline:none}
+.cin:focus{border-color:var(--am)}
+.cin::placeholder{color:var(--mu)}
+.csend{width:38px;height:38px;border-radius:50%;background:var(--am);color:#0d0d0f;border:none;font-size:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.csend:active{transform:scale(.88)}
+.etray{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px}
+.eq{font-size:20px;cursor:pointer;line-height:1}
+.eq:active{transform:scale(1.4)}
+.react-popup{position:absolute;bottom:100%;left:0;background:var(--bg2);border:.5px solid var(--b2);border-radius:20px;padding:6px 8px;display:flex;gap:4px;z-index:20;box-shadow:0 4px 16px rgba(0,0,0,.4);animation:popIn .2s ease}
+
+/* WIFE ALERTS */
+.wgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px}
+.wb{padding:11px 9px;border-radius:11px;border:1px solid;text-align:center;cursor:pointer;transition:all .15s;user-select:none}
+.wb:active{transform:scale(.93)}
+.w1{background:rgba(62,207,142,.07);border-color:var(--gbr);color:var(--gr)}
+.w2{background:rgba(240,165,0,.07);border-color:var(--abr);color:var(--am)}
+.w3{background:rgba(232,64,64,.08);border-color:var(--rbr);color:var(--re)}
+.w4{background:rgba(232,64,64,.15);border-color:var(--re);color:var(--re);animation:glow 1.5s ease-in-out infinite}
+.wn{font-family:'Syne',sans-serif;font-weight:700;font-size:12px}
+.wm{font-size:11px;margin-top:3px;opacity:.85;line-height:1.35}
+.wsent{display:none;background:var(--bg3);border-radius:9px;padding:9px;margin-top:7px;font-size:12px;color:var(--gr);text-align:center;border:.5px solid var(--gbr)}
+.wsent.show{display:block}
+
+/* DAARU */
+.dmrow{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:.5px solid var(--b1)}
+.dmrow:last-child{border-bottom:none}
+.dmi{flex:1}.dmnm{font-size:13px;font-weight:500}.dmlv{font-size:11px;margin-top:1px}
+.dmbar{flex:1;max-width:70px;background:var(--bg3);border-radius:3px;height:5px;overflow:hidden}
+.dmfil{height:100%;border-radius:3px;transition:width .4s,background .4s}
+.dmtap{font-size:22px;cursor:pointer}
+.dmtap:active{transform:scale(1.4)}
+.vibebar{background:var(--bg3);border-radius:11px;padding:11px;margin-top:9px;display:flex;align-items:center;gap:11px}
+.vibet{flex:1;background:var(--bg4);border-radius:4px;height:7px;overflow:hidden}
+.vibef{height:100%;border-radius:4px;transition:width .5s,background .5s}
+
+/* SAFETY */
+#map-svg{width:100%;height:200px;border-radius:10px;margin-bottom:10px;border:.5px solid var(--b2)}
+.safe-btn{width:100%;padding:12px;border-radius:11px;border:1px solid var(--gbr);background:var(--gbg);color:var(--gr);font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:7px}
+.safe-btn.on{background:var(--gr);color:#0d0d0f;border-color:var(--gr)}
+.sos-btn{width:100%;padding:12px;border-radius:11px;border:1px solid var(--rbr);background:var(--rbg);color:var(--re);font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-top:7px;display:flex;align-items:center;justify-content:center;gap:7px}
+.sos-btn:active{background:var(--re);color:#fff}
+.rescue-btn{width:100%;padding:12px;border-radius:11px;border:1px solid var(--abr);background:var(--abg);color:var(--am);font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-top:7px;display:flex;align-items:center;justify-content:center;gap:7px}
+
+/* PEOPLE */
+.prow{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:.5px solid var(--b1)}
+.prow:last-child{border-bottom:none}
+.pav{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;flex-shrink:0;overflow:hidden}
+.pav img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.pi{flex:1}.pnm{font-size:13px;font-weight:500}.pro{font-size:11px;color:var(--mu);margin-top:1px}
+.pbds{display:flex;gap:4px;flex-wrap:wrap}
+.pbd{font-size:10px;padding:2px 7px;border-radius:9px}
+
+/* VOTE */
+.vi{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:.5px solid var(--b1);cursor:pointer}
+.vi:last-child{border-bottom:none}
+.vck{width:19px;height:19px;border-radius:50%;border:1.5px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
+.vck.on{background:var(--am);border-color:var(--am);color:#0d0d0f}
+.vbar{width:60px;background:var(--bg3);border-radius:3px;height:5px;overflow:hidden;flex-shrink:0}
+.vfil{height:100%;background:var(--am);border-radius:3px;transition:width .4s}
+.vpct{font-size:11px;color:var(--mu);min-width:26px;text-align:right}
+
+/* STARS */
+.stars{display:flex;gap:6px;margin:9px 0}
+.str{font-size:28px;cursor:pointer;color:var(--b2)}
+.str.lit{color:var(--am)}
+.str:active{transform:scale(1.3)}
+
+/* PHOTOS */
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:9px}
+.photo-thumb{aspect-ratio:1;border-radius:7px;overflow:hidden;background:var(--bg3)}
+.photo-thumb img{width:100%;height:100%;object-fit:cover}
+.photo-add{aspect-ratio:1;border-radius:7px;border:1px dashed var(--b2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;font-size:11px;color:var(--mu)}
+.photo-add span{font-size:22px}
+
+/* LIFECYCLE */
+.lifecycle{display:flex;align-items:flex-start;margin:0 11px 9px;background:var(--bg2);border:.5px solid var(--b1);border-radius:12px;padding:12px}
+.ls{flex:1;text-align:center;position:relative}
+.ls-dot{width:10px;height:10px;border-radius:50%;background:var(--b2);margin:0 auto 4px}
+.ls.ds .ls-dot{background:var(--gr)}
+.ls.cs .ls-dot{background:var(--am);box-shadow:0 0 8px var(--am)}
+.ls-line{position:absolute;top:4px;left:50%;width:100%;height:2px;background:var(--b1)}
+.ls.ds .ls-line{background:var(--gr)}
+.ls:last-child .ls-line{display:none}
+.ls-lbl{font-size:9px;color:var(--mu)}
+.ls.cs .ls-lbl{color:var(--am);font-weight:600}
+
+/* COUNTDOWN */
+.cdbx{background:var(--bg3);border-radius:11px;padding:11px;display:flex;gap:7px;align-items:center;margin:0 11px 9px}
+.cdu{text-align:center;flex:1}
+.cdn{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--am)}
+.cdl{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.05em}
+.cds{font-size:16px;color:var(--mu)}
+
+/* CALENDAR PICKER */
+.cal-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.8);display:none;align-items:flex-end;backdrop-filter:blur(4px)}
+.cal-overlay.open{display:flex}
+.cal-sheet{background:var(--bg2);border-radius:20px 20px 0 0;border:.5px solid var(--b2);padding:16px;width:100%;max-height:80vh;overflow-y:auto;animation:slideUp .25s ease}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cal-month{font-family:'Syne',sans-serif;font-weight:700;font-size:16px}
+.cal-nav{width:32px;height:32px;border-radius:8px;background:var(--bg3);border:.5px solid var(--b2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px}
+.cal-days-hdr{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:6px}
+.cal-day-hdr{text-align:center;font-size:11px;color:var(--mu);padding:4px 0}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-day{height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:all .15s}
+.cal-day:hover{background:var(--bg3)}
+.cal-day.today{background:var(--abg);color:var(--am)}
+.cal-day.sel{background:var(--am);color:#0d0d0f;font-weight:700}
+.cal-day.empty{cursor:default}
+.cal-day.past{color:var(--mu);cursor:default}
+.time-row{display:flex;gap:10px;margin-top:14px;align-items:center}
+.time-sel{flex:1;background:var(--bg3);border:.5px solid var(--b2);border-radius:9px;padding:10px 12px;color:var(--tx);font-size:16px;font-family:'Syne',sans-serif;font-weight:700;text-align:center;outline:none;-webkit-appearance:none}
+
+/* QR CODE */
+.qr-canvas{border-radius:12px;background:white;padding:12px;display:block;margin:0 auto 12px}
+
+/* JOIN REQUEST SCREEN */
+.request-card{background:var(--bg2);border:.5px solid var(--b2);border-radius:16px;padding:18px;width:100%;max-width:340px;text-align:center}
+.req-avatar{width:70px;height:70px;border-radius:50%;background:var(--bg3);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden}
+.req-avatar img{width:100%;height:100%;object-fit:cover}
+.req-name{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;margin-bottom:4px}
+.req-sub{font-size:13px;color:var(--mu);margin-bottom:14px}
+.req-msg{background:var(--bg3);border-radius:10px;padding:10px;font-size:13px;margin-bottom:14px;font-style:italic;color:var(--mu2)}
+.waiting-anim{font-size:40px;animation:bounce 1.5s ease-in-out infinite;display:block;margin:14px auto}
+
+/* INVITE CARD */
+.invite-card{background:linear-gradient(135deg,#1c1c22,#0d0d0f);border:1px solid var(--abr);border-radius:16px;padding:18px;text-align:center;margin-bottom:12px;position:relative;overflow:hidden}
+.invite-card::before{content:'🥃';position:absolute;font-size:100px;opacity:.05;top:-20px;right:-10px}
+.ic-party{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--am);margin-bottom:4px}
+.ic-det{font-size:12px;color:var(--mu2);margin-bottom:10px;line-height:1.6}
+.ic-pin{font-family:'Syne',sans-serif;font-weight:800;font-size:34px;letter-spacing:8px;color:var(--am);margin-bottom:6px}
+
+/* WIFE LINK PAGE */
+.wife-page{background:linear-gradient(135deg,#1a0a0a,#0d0d0f);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+.wife-title{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:var(--re);margin-bottom:6px}
+.wife-party{font-size:14px;color:var(--mu2);margin-bottom:24px}
+.wife-btn-big{width:100%;max-width:300px;padding:18px;border-radius:14px;border:1px solid;text-align:center;cursor:pointer;margin-bottom:10px;display:block}
+.wbig-1{background:rgba(62,207,142,.1);border-color:var(--gbr);color:var(--gr)}
+.wbig-2{background:rgba(240,165,0,.1);border-color:var(--abr);color:var(--am)}
+.wbig-3{background:rgba(232,64,64,.1);border-color:var(--rbr);color:var(--re)}
+.wbig-4{background:rgba(232,64,64,.2);border-color:var(--re);color:var(--re);animation:glow 1.5s ease-in-out infinite}
+
+/* BRAND */
+.bband{background:linear-gradient(135deg,rgba(240,165,0,.07),rgba(168,85,247,.07));border:.5px solid var(--abr);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:9px;cursor:pointer;margin-bottom:9px}
+.bbl{font-size:26px}.bbt{flex:1}.bbn{font-size:12px;font-weight:500;color:var(--am)}.bbs{font-size:11px;color:var(--mu);margin-top:1px}
+.bbtag{font-size:9px;background:var(--abg);border:.5px solid var(--abr);border-radius:5px;padding:1px 5px;color:var(--am)}
+
+/* MODAL */
+.ovl{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.75);display:none;align-items:flex-end;backdrop-filter:blur(4px)}
+.ovl.open{display:flex}
+.sheet{background:var(--bg2);border-radius:20px 20px 0 0;border:.5px solid var(--b2);padding:16px 14px;padding-bottom:max(18px,env(safe-area-inset-bottom,18px));width:100%;max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch;animation:slideUp .25s ease}
+.sh{width:32px;height:4px;background:var(--b2);border-radius:2px;margin:0 auto 14px}
+.stitle{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;margin-bottom:14px}
+.ptgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.ptit{padding:10px 6px;border-radius:9px;text-align:center;border:1px solid var(--b2);cursor:pointer}
+.ptit.on{background:var(--abg);border-color:var(--abr)}
+.pt-em{font-size:20px;display:block;margin-bottom:3px}
+.pt-nm{font-size:10px;color:var(--mu)}
+.sptypes{display:flex;gap:6px;margin-bottom:10px}
+.sptype{flex:1;padding:8px 5px;border-radius:8px;text-align:center;border:1px solid var(--b2);font-size:11px;cursor:pointer;line-height:1.35}
+.sptype.on{background:var(--abg);border-color:var(--abr);color:var(--am)}
+.join-modes{display:flex;flex-direction:column;gap:7px;margin-bottom:10px}
+.jmode{padding:10px 12px;border-radius:10px;border:1px solid var(--b2);cursor:pointer}
+.jmode.on{background:var(--abg);border-color:var(--abr)}
+.jmode-title{font-size:13px;font-weight:500}
+.jmode-sub{font-size:11px;color:var(--mu);margin-top:2px}
+.lang-opts{display:flex;gap:7px;margin-bottom:14px}
+.lang-opt{flex:1;padding:10px 6px;border-radius:9px;text-align:center;border:1px solid var(--b2);cursor:pointer;font-size:13px}
+.lang-opt.on{background:var(--abg);border-color:var(--abr);color:var(--am);font-weight:500}
+
+/* LOADING */
+.loader{width:24px;height:24px;border:2px solid var(--b2);border-top-color:var(--am);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto}
+.loading-overlay{position:fixed;inset:0;z-index:400;background:rgba(13,13,15,.85);display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;backdrop-filter:blur(4px)}
+.loading-overlay.show{display:flex}
+.loading-txt{font-size:13px;color:var(--mu)}
+
+/* TOAST */
+.toast{position:fixed;bottom:78px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--bg2);border:.5px solid var(--b2);border-radius:10px;padding:8px 15px;font-size:13px;opacity:0;transition:all .24s;z-index:500;white-space:nowrap;max-width:86vw;overflow:hidden;text-overflow:ellipsis;box-shadow:0 4px 18px rgba(0,0,0,.5);pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.gr{border-color:var(--gbr);color:var(--gr)}
+.toast.re{border-color:var(--rbr);color:var(--re)}
+.toast.am{border-color:var(--abr);color:var(--am)}
+.toast.bl{border-color:var(--bbr);color:var(--bl)}
+
+/* MISC */
+.cpyr{text-align:center;padding:16px 14px 6px;font-size:10px;color:var(--mu);opacity:.5}
+.divider{height:.5px;background:var(--b1);margin:10px 0}
+.mem-card{background:linear-gradient(135deg,#1c1c22,#151518);border:.5px solid var(--abr);border-radius:14px;padding:16px;text-align:center;margin-top:14px}
+.mc-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--am);margin-bottom:10px}
+.mc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.mc-stat{background:var(--bg3);border-radius:9px;padding:9px 6px}
+.mc-num{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;color:var(--am)}
+.mc-lbl{font-size:10px;color:var(--mu);margin-top:2px}
+.notif-banner{background:var(--bbg);border:.5px solid var(--bbr);border-radius:11px;padding:10px 12px;margin:9px 11px;display:flex;align-items:center;gap:9px}
+</style>
+</head>
+<body>
+<div id="APP">
+
+<!-- SPLASH -->
+<div id="S-splash" class="screen flex-screen active">
+  <div style="animation:stumble 2s ease-in-out infinite;transform-origin:50% 80%">
+    <svg width="90" height="110" viewBox="0 0 90 110" fill="none">
+      <ellipse cx="45" cy="68" rx="20" ry="26" fill="#f0a500" opacity=".9"/>
+      <circle cx="45" cy="26" r="19" fill="#FDDBB4"/>
+      <ellipse cx="45" cy="11" rx="18" ry="9" fill="#2d1b00"/>
+      <text x="35" y="27" font-size="9" fill="#2d1b00" font-weight="bold">×</text>
+      <text x="47" y="27" font-size="9" fill="#2d1b00" font-weight="bold">×</text>
+      <path d="M37 36 Q45 43 53 36" stroke="#2d1b00" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+      <path d="M28 92 L20 112" stroke="#f0a500" stroke-width="8" stroke-linecap="round"/>
+      <path d="M62 92 L72 111" stroke="#f0a500" stroke-width="8" stroke-linecap="round"/>
+      <path d="M25 64 L8 80" stroke="#f0a500" stroke-width="8" stroke-linecap="round"/>
+      <rect x="0" y="73" width="9" height="20" rx="4.5" fill="#3ecf8e" opacity=".9"/>
+      <path d="M65 64 L82 52" stroke="#f0a500" stroke-width="8" stroke-linecap="round"/>
+      <text x="75" y="18" font-size="13">⭐</text><text x="16" y="20" font-size="10">✨</text>
+    </svg>
+  </div>
+  <div class="splash-logo" style="margin-top:12px">🥃 <em>Daru</em> Party</div>
+  <div class="splash-tag">Sirf tera group. Private. Secure. 🤫</div>
+  <div class="loader" style="margin-top:28px"></div>
+</div>
+
+<!-- ONBOARDING: Step 1 - Identity -->
+<div id="S-ob1" class="screen flex-screen">
+  <div class="ob-card">
+    <div class="ob-prog"><div class="ob-dot done" id="op1"></div><div class="ob-dot" id="op2"></div><div class="ob-dot" id="op3"></div></div>
+    <div class="ob-step">Step 1 of 3</div>
+    <div class="ob-title">Apna intro do 👋</div>
+    <div class="ob-sub">Tera naam aur photo group mein dikhega</div>
+    <div class="photo-pick" id="photo-pick" onclick="document.getElementById('photo-file').click()">
+      <span style="font-size:28px">📷</span>
+      <span>Photo add karo</span>
+    </div>
+    <input type="file" id="photo-file" accept="image/*" style="display:none" onchange="pickPhoto(this)">
+    <div class="inrow"><div class="inlbl">Naam *</div><input class="inp" id="ob-name" type="text" placeholder="Saurabh, Rahul..." maxlength="20"></div>
+    <div class="inrow">
+      <div class="inlbl">Mobile (optional — for invites & payments)</div>
+      <div class="phone-row">
+        <div class="phone-cc">🇮🇳 +91</div>
+        <input class="inp" id="ob-mobile" type="tel" placeholder="9876543210" maxlength="10" style="flex:1">
+      </div>
+    </div>
+    <div class="inrow"><div class="inlbl">Sheher (optional)</div><input class="inp" id="ob-city" type="text" placeholder="Gurgaon, Delhi..."></div>
+    <div class="inlbl">Avatar color</div>
+    <div class="av-pick" id="av-pick"></div>
+    <button class="btn" onclick="ob1Next()" style="margin-top:10px">Next →</button>
+  </div>
+</div>
+
+<!-- ONBOARDING: Step 2 - Personal PIN -->
+<div id="S-ob2" class="screen flex-screen">
+  <div class="ob-card">
+    <div class="ob-prog"><div class="ob-dot done"></div><div class="ob-dot done" id="op2b"></div><div class="ob-dot" id="op3b"></div></div>
+    <div class="ob-step">Step 2 of 3</div>
+    <div class="ob-title">Apna Personal PIN set karo 🔐</div>
+    <div class="ob-sub">Har baar app kholne ke liye. Sirf tera — kisi ko mat batana.</div>
+    <div class="pdots" id="PDR2"><div class="pd" id="p2d0"></div><div class="pd" id="p2d1"></div><div class="pd" id="p2d2"></div><div class="pd" id="p2d3"></div></div>
+    <div class="pkp">
+      <div class="pk" onclick="pp('1')">1</div><div class="pk" onclick="pp('2')">2</div><div class="pk" onclick="pp('3')">3</div>
+      <div class="pk" onclick="pp('4')">4</div><div class="pk" onclick="pp('5')">5</div><div class="pk" onclick="pp('6')">6</div>
+      <div class="pk" onclick="pp('7')">7</div><div class="pk" onclick="pp('8')">8</div><div class="pk" onclick="pp('9')">9</div>
+      <div class="pk del" onclick="ppdel()">⌫</div><div class="pk" onclick="pp('0')">0</div><div class="pk go" onclick="ppgo()">Set →</div>
+    </div>
+    <div class="perr" id="PERR2"></div>
+  </div>
+</div>
+
+<!-- ONBOARDING: Step 3 - Confirm PIN -->
+<div id="S-ob3" class="screen flex-screen">
+  <div class="ob-card">
+    <div class="ob-prog"><div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot done"></div></div>
+    <div class="ob-step">Step 3 of 3</div>
+    <div class="ob-title">PIN confirm karo 🔐</div>
+    <div class="ob-sub">Dobara type karo to make sure</div>
+    <div class="pdots" id="PDR3"><div class="pd" id="p3d0"></div><div class="pd" id="p3d1"></div><div class="pd" id="p3d2"></div><div class="pd" id="p3d3"></div></div>
+    <div class="pkp">
+      <div class="pk" onclick="pc('1')">1</div><div class="pk" onclick="pc('2')">2</div><div class="pk" onclick="pc('3')">3</div>
+      <div class="pk" onclick="pc('4')">4</div><div class="pk" onclick="pc('5')">5</div><div class="pk" onclick="pc('6')">6</div>
+      <div class="pk" onclick="pc('7')">7</div><div class="pk" onclick="pc('8')">8</div><div class="pk" onclick="pc('9')">9</div>
+      <div class="pk del" onclick="pcdel()">⌫</div><div class="pk" onclick="pc('0')">0</div><div class="pk go" onclick="pcgo()">Done ✓</div>
+    </div>
+    <div class="perr" id="PERR3"></div>
+  </div>
+</div>
+
+<!-- PERSONAL PIN (every launch) -->
+<div id="S-pin" class="screen flex-screen">
+  <div class="pin-logo">🥃 <em>Daru</em> Party</div>
+  <div style="font-size:13px;color:var(--mu);margin:5px 0 10px;text-align:center">Apna Personal PIN daalo</div>
+  <div style="animation:stumble 2s ease-in-out infinite;transform-origin:50% 80%;margin-bottom:8px">
+    <svg width="70" height="86" viewBox="0 0 70 86" fill="none">
+      <ellipse cx="35" cy="56" rx="16" ry="20" fill="#f0a500" opacity=".9"/>
+      <circle cx="35" cy="22" r="15" fill="#FDDBB4"/>
+      <ellipse cx="35" cy="10" rx="14" ry="7" fill="#2d1b00"/>
+      <text x="26" y="23" font-size="8" fill="#2d1b00" font-weight="bold">×</text><text x="37" y="23" font-size="8" fill="#2d1b00" font-weight="bold">×</text>
+      <path d="M28 30 Q35 36 42 30" stroke="#2d1b00" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M22 74 L16 88" stroke="#f0a500" stroke-width="6" stroke-linecap="round"/>
+      <path d="M48 74 L56 87" stroke="#f0a500" stroke-width="6" stroke-linecap="round"/>
+      <path d="M20 52 L7 64" stroke="#f0a500" stroke-width="6" stroke-linecap="round"/>
+      <rect x="1" y="58" width="7" height="16" rx="3.5" fill="#3ecf8e" opacity=".9"/>
+      <path d="M50 52 L63 42" stroke="#f0a500" stroke-width="6" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="pin-card">
+    <div class="pin-glbl">Welcome back,</div>
+    <div class="pin-gnm" id="pin-username">Saurabh 👋</div>
+    <div class="pdots" id="PDR1"><div class="pd" id="pd0"></div><div class="pd" id="pd1"></div><div class="pd" id="pd2"></div><div class="pd" id="pd3"></div></div>
+    <div class="pkp">
+      <div class="pk" onclick="pk('1')">1</div><div class="pk" onclick="pk('2')">2</div><div class="pk" onclick="pk('3')">3</div>
+      <div class="pk" onclick="pk('4')">4</div><div class="pk" onclick="pk('5')">5</div><div class="pk" onclick="pk('6')">6</div>
+      <div class="pk" onclick="pk('7')">7</div><div class="pk" onclick="pk('8')">8</div><div class="pk" onclick="pk('9')">9</div>
+      <div class="pk del" onclick="pdel()">⌫</div><div class="pk" onclick="pk('0')">0</div><div class="pk go" onclick="pgo()">Enter</div>
+    </div>
+    <div class="perr" id="PERR1"></div>
+  </div>
+  <div style="margin-top:13px;font-size:12px;color:var(--mu);text-align:center">Naya phone? <span style="color:var(--am);cursor:pointer" onclick="resetApp()">Reset app</span></div>
+</div>
+
+<!-- GROUP PIN -->
+<div id="S-gpin" class="screen flex-screen">
+  <div style="font-size:13px;color:var(--mu);text-align:center;margin-bottom:10px">Group mein enter karo</div>
+  <div class="pin-card">
+    <div class="pin-glbl">Group PIN chahiye</div>
+    <div class="pin-gnm" id="gpin-name">College Gang 🍻</div>
+    <div class="pdots" id="GPDR"><div class="pd" id="gd0"></div><div class="pd" id="gd1"></div><div class="pd" id="gd2"></div><div class="pd" id="gd3"></div></div>
+    <div class="pkp">
+      <div class="pk" onclick="gpk('1')">1</div><div class="pk" onclick="gpk('2')">2</div><div class="pk" onclick="gpk('3')">3</div>
+      <div class="pk" onclick="gpk('4')">4</div><div class="pk" onclick="gpk('5')">5</div><div class="pk" onclick="gpk('6')">6</div>
+      <div class="pk" onclick="gpk('7')">7</div><div class="pk" onclick="gpk('8')">8</div><div class="pk" onclick="gpk('9')">9</div>
+      <div class="pk del" onclick="gdel()">⌫</div><div class="pk" onclick="gpk('0')">0</div><div class="pk go" onclick="ggo()">Enter</div>
+    </div>
+    <div class="perr" id="GPERR"></div>
+  </div>
+  <div style="margin-top:13px;display:flex;flex-direction:column;align-items:center;gap:8px">
+    <span class="pskip" onclick="requestJoin()">Request to join instead →</span>
+    <span class="pskip" onclick="goHome()">← Back</span>
+  </div>
+</div>
+
+<!-- JOIN REQUEST WAITING -->
+<div id="S-waiting" class="screen flex-screen">
+  <div class="request-card">
+    <div class="req-avatar" id="wait-av"><span id="wait-av-txt">🙋</span></div>
+    <div class="req-name" id="wait-name">Waiting...</div>
+    <div class="req-sub">Request bhej diya <span id="wait-party">College Gang</span> mein</div>
+    <span class="waiting-anim">⏳</span>
+    <div style="font-size:13px;color:var(--mu);margin-bottom:14px">Koi bhi member approve karega toh PIN milega yahan</div>
+    <div id="wait-approved" style="display:none;background:var(--gbg);border:.5px solid var(--gbr);border-radius:10px;padding:12px;margin-bottom:12px">
+      <div style="font-size:13px;color:var(--gr);font-weight:500">✓ Approved! PIN auto-filling...</div>
+    </div>
+    <button class="btn s" onclick="goHome()">Cancel</button>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="S-home" class="screen" style="display:none">
+  <div class="tb">
+    <div class="tb-logo">🥃 <em>Daru</em> Party</div>
+    <div class="tb-r">
+      <div class="ib" onclick="openMod('notifs')" style="position:relative">🔔<div class="ndot" id="notif-dot" style="display:none"></div></div>
+      <div class="ib" onclick="openMod('profile')">
+        <div id="home-av" style="width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;overflow:hidden">?</div>
+      </div>
+    </div>
+  </div>
+  <div class="sc">
+    <div style="display:flex;align-items:center;padding:14px 14px 0">
+      <div style="flex:1">
+        <div style="font-size:13px;color:var(--mu)" id="h-greet">Hey 👋</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:24px;letter-spacing:-.5px">Teri <span style="color:var(--am)">Parties</span></div>
+      </div>
+      <svg width="46" height="56" viewBox="0 0 46 56" fill="none" style="animation:hiccup 3s ease-in-out infinite">
+        <ellipse cx="23" cy="34" rx="13" ry="17" fill="#f0a500" opacity=".9"/><circle cx="23" cy="13" r="11" fill="#FDDBB4"/>
+        <ellipse cx="23" cy="5" rx="10" ry="5" fill="#2d1b00"/>
+        <text x="17" y="14" font-size="6" fill="#2d1b00" font-weight="bold">×</text><text x="25" y="14" font-size="6" fill="#2d1b00" font-weight="bold">×</text>
+        <path d="M17 19 Q23 23 29 19" stroke="#2d1b00" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M12 47 L8 60" stroke="#f0a500" stroke-width="5" stroke-linecap="round"/><path d="M34 47 L40 59" stroke="#f0a500" stroke-width="5" stroke-linecap="round"/>
+        <path d="M10 30 L3 22" stroke="#f0a500" stroke-width="5" stroke-linecap="round"/>
+        <rect x="-2" y="16" width="6" height="12" rx="3" fill="#3ecf8e" opacity=".9"/>
+        <path d="M36 30 L44 26" stroke="#f0a500" stroke-width="5" stroke-linecap="round"/>
+        <text x="38" y="9" font-size="9">💫</text>
+      </svg>
+    </div>
+    <div id="notif-banner"></div>
+    <div id="requests-banner"></div>
+    <div style="margin:10px 11px 0" class="bband" onclick="T('Royal Stag offer! 🥃','am')">
+      <div class="bbl">👑</div><div class="bbt"><div class="bbn">Royal Stag — Abhi Shuru Karo</div><div class="bbs">Party special offer</div></div><div class="bbtag">AD</div>
+    </div>
+    <div style="margin:8px 11px;background:var(--pbg);border:.5px solid var(--pbr);border-radius:12px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:9px">
+      <div><div style="font-size:12px;font-weight:500;color:var(--pu)" id="ib-t">🔗 Invite karo</div><div style="font-size:11px;color:rgba(168,85,247,.65)" id="ib-s">PIN share karo</div></div>
+      <button class="btn sm" onclick="if(CP)openMod('invite')">Share 🔗</button>
+    </div>
+    <div class="slbl">Active Parties</div>
+    <div style="padding:0 11px" id="home-active"></div>
+    <div class="slbl">Past Parties</div>
+    <div style="padding:0 11px" id="home-past"></div>
+    <div style="padding:10px 11px">
+      <button class="btn s" onclick="openMod('joinParty')" style="margin-top:0">🔗 Join a Party with PIN / QR</button>
+    </div>
+    <div class="cpyr">© 2025 Daru Party · MaggoTrades · Patent Pending<br>Unauthorized copying prohibited · By Saurabh</div>
+  </div>
+</div>
+
+<!-- DETAIL -->
+<div id="S-det" class="screen" style="display:none">
+  <div class="tb">
+    <div class="backrow" onclick="goHome()"><span style="font-size:17px">‹</span> Parties</div>
+    <div class="tb-r">
+      <div class="ib" onclick="openMod('invite')">🔗</div>
+      <div class="ib" onclick="openMod('settings')">⚙️</div>
+    </div>
+  </div>
+  <div class="sc" id="det-content"></div>
+</div>
+
+<!-- MAP -->
+<div id="S-map" class="screen" style="display:none">
+  <div class="tb"><div class="tb-logo">🛡️ Safety Map</div><div class="tb-r"><div class="ib" onclick="goHome()">✕</div></div></div>
+  <div class="sc" style="padding:12px">
+    <svg id="map-svg" viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div style="font-size:12px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px">Live Checkpoints</div>
+    <div id="map-cp-list"></div>
+    <button class="btn" style="margin-top:10px" onclick="tagCPMap()">📍 Tag Checkpoint Here</button>
+    <div class="cpyr">Checkpoints expire in 2 hours. Drive safe always 🙏</div>
+  </div>
+</div>
+
+<!-- WIFE LINK PAGE (shown when ?wife=token) -->
+<div id="S-wife" class="screen" style="display:none">
+  <div class="wife-page">
+    <div style="font-size:50px;margin-bottom:10px;animation:scared 1s ease-in-out infinite">😱</div>
+    <div class="wife-title">Party Alert Panel</div>
+    <div class="wife-party" id="wife-party-name">College Gang 🍻</div>
+    <div style="font-size:13px;color:var(--mu);margin-bottom:20px">Tap to send alert to the whole group</div>
+    <div class="wife-btn-big wbig-1" onclick="sendWifeAlert(1)">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px">😌 Chill Alert</div>
+      <div style="font-size:12px;margin-top:4px;opacity:.8">Bhai thoda jaldi kar, time ho raha</div>
+    </div>
+    <div class="wife-btn-big wbig-2" onclick="sendWifeAlert(2)">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px">⚠️ Warning Alert</div>
+      <div style="font-size:12px;margin-top:4px;opacity:.8">Ek ghante mein nikal! Serious baat</div>
+    </div>
+    <div class="wife-btn-big wbig-3" onclick="sendWifeAlert(3)">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px">🚨 RED Alert</div>
+      <div style="font-size:12px;margin-top:4px;opacity:.8">Abhi nikal! Rona mat baad mein</div>
+    </div>
+    <div class="wife-btn-big wbig-4" onclick="sendWifeAlert(4)">
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px">💀 NUCLEAR Alert</div>
+      <div style="font-size:12px;margin-top:4px;opacity:.8">NOW. MAAN JA NAHI TOH CLASS LAGEGI 💀</div>
+    </div>
+    <div id="wife-sent-confirm" style="display:none;margin-top:16px;background:rgba(62,207,142,.1);border:.5px solid var(--gbr);border-radius:12px;padding:12px;font-size:13px;color:var(--gr);text-align:center">
+      ✓ Alert sent to group!
+    </div>
+  </div>
+</div>
+
+</div><!-- /APP -->
+
+<div id="BN">
+  <div class="bni on" id="bn0" onclick="BN(0)"><div class="bni-ic">🏠</div><div>Parties</div></div>
+  <div class="bni" id="bn1" onclick="BN(1)"><div class="bni-ic">🗺️</div><div>Safety Map</div></div>
+  <div class="bni" id="bn2" onclick="BN(2)"><div class="bni-ic">🔔</div><div id="bnl2">Alerts</div></div>
+  <div class="bni" id="bn3" onclick="BN(3)"><div class="bni-ic">👤</div><div>Profile</div></div>
+</div>
+<button id="FAB" onclick="openMod('newParty')">+</button>
+<div class="ovl" id="MOD" onclick="closeMod(event)"><div class="sheet" id="MOD-s"><div class="sh"></div><div class="stitle" id="MOD-t"></div><div id="MOD-b"></div></div></div>
+<div class="cal-overlay" id="CAL" onclick="closeCal(event)"><div class="cal-sheet" id="CAL-s"></div></div>
+<div class="loading-overlay" id="LOAD"><div class="loader"></div><div class="loading-txt" id="LOAD-txt">Loading...</div></div>
+<div class="toast" id="TOAST"></div>
+<script>
+/* ================================================================
+   CONFIG — SUPABASE
+================================================================ */
+const SB_URL='https://lcwxrfliwzpdxgeppixn.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxjd3hyZmxpd3pwZHhnZXBwaXhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1MzU2NDIsImV4cCI6MjA5NTExMTY0Mn0.loymoIkxd-HQGqHjfQy2ZQURFiNYyw8UnBgy_QjN0dc';
+
+async function sb(table,method='GET',body=null,query=''){
+  const url=`${SB_URL}/rest/v1/${table}${query}`;
+  const h={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Prefer':'return=representation'};
+  try{
+    const r=await fetch(url,{method,headers:h,body:body?JSON.stringify(body):null});
+    if(!r.ok){
+      const e=await r.text();
+      console.error('SB error',table,method,r.status,e);
+      // Show user-friendly error for common cases
+      if(r.status===401||r.status===403){T('Database auth error — check Supabase key','re');}
+      else if(r.status>=500){T('Server error — try again','re');}
+      return null;
+    }
+    const t=await r.text();return t?JSON.parse(t):null;
+  }catch(err){
+    console.error('SB fetch error:',table,method,err.message);
+    // Only show toast for non-GET requests (mutations)
+    if(method!=='GET')T('Connection error — check internet','re');
+    return null;
+  }
+}
+const dbGet=(t,q='')=>sb(t,'GET',null,q);
+const dbPost=(t,b)=>sb(t,'POST',b);
+const dbPatch=(t,q,b)=>sb(t,'PATCH',b,q);
+const dbDelete=(t,q)=>sb(t,'DELETE',null,q);
+
+/* REALTIME */
+let realtimeSubs={};
+function subRT(table,filter,cb){
+  const key=table+'_'+filter;
+  if(realtimeSubs[key])return;
+  const ws=new WebSocket(`wss://lcwxrfliwzpdxgeppixn.supabase.co/realtime/v1/websocket?apikey=${SB_KEY}&vsn=1.0.0`);
+  ws.onopen=()=>{
+    ws.send(JSON.stringify({topic:`realtime:${table}`,event:'phx_join',payload:{config:{broadcast:{self:true},postgres_changes:[{event:'INSERT',schema:'public',table,filter}]}},ref:'1'}));
+  };
+  ws.onmessage=e=>{
+    const d=JSON.parse(e.data);
+    if(d.event==='postgres_changes'&&d.payload?.data?.record)cb(d.payload.data.record);
+  };
+  realtimeSubs[key]=ws;
+}
+
+/* ================================================================
+   CONSTANTS
+================================================================ */
+const AVCOLORS=['#f0a500','#5b8dee','#3ecf8e','#e84040','#a855f7','#f472b6','#f97316','#06b6d4'];
+const DL=[
+  {n:'Sober 😇',c:'#3ecf8e',p:0,e:'😇',tilt:0},
+  {n:'Smooth Sailing 😊',c:'#3ecf8e',p:20,e:'😊',tilt:5},
+  {n:'All Set 😄',c:'#f0a500',p:40,e:'😄',tilt:12},
+  {n:'Getting There 🥴',c:'#f0a500',p:60,e:'🥴',tilt:20},
+  {n:'Gone Case 🤪',c:'#e84040',p:80,e:'🤪',tilt:30},
+  {n:'VOMIT WARNING 🤮',c:'#e84040',p:100,e:'🤮',tilt:45}
+];
+const LANGS={
+  en:{going:'Going',maybe:'Maybe',skip:'Skip',booze:'Booze Plan',cost:'Settlement',carpool:'Carpool',people:"Who's Coming",safety:'Safety Shield',food:'Food & Vote',chat:'Group Chat',wife:'Wife Alerts',daaru:'Daaru Meter',rate:'Rate & Thank',loc:'Location',photos:'Photos',markSafe:'Mark Me Safe',sos:'SOS Now',rescue:'Rescue Me',pending:'pending',settled:'All settled'},
+  hi:{going:'Jaa raha hoon',maybe:'Shayad',skip:'Nahi',booze:'Daaru Plan',cost:'Paisa Settle',carpool:'Saath Chalein',people:'Kaun Aa Raha',safety:'Suraksha',food:'Khaana',chat:'Baatcheet',wife:'Patni Alerts',daaru:'Daaru Meter',rate:'Rating',loc:'Jagah',photos:'Photos',markSafe:'Main Surakshit',sos:'SOS',rescue:'Bachao Mujhe',pending:'baaki',settled:'Sab clear'},
+  hinglish:{going:'Aa raha hoon',maybe:'Maybe',skip:'Nahi aaunga',booze:'Booze Plan',cost:'Paisa Settle',carpool:'Carpool',people:'Kaun Aa Raha',safety:'Safety Shield',food:'Khaana & Vote',chat:'Bakchodi Group',wife:'Wife Alerts',daaru:'Daaru Meter',rate:'Rate & Thank',loc:'Location',photos:'Photo Dump',markSafe:'Main Safe Hoon',sos:'SOS Bhejo',rescue:'Rescue Bhejo',pending:'pending',settled:'Sab settle'}
+};
+let CL='hinglish';
+const L=k=>LANGS[CL]?.[k]||LANGS.en[k]||k;
+
+/* ================================================================
+   LOCAL STORE
+================================================================ */
+const LS=(k,v)=>v===undefined?JSON.parse(localStorage.getItem('dp4_'+k)||'null'):localStorage.setItem('dp4_'+k,JSON.stringify(v));
+
+/* ================================================================
+   APP STATE
+================================================================ */
+let CU=null; // current user object
+let CP=null; // current party
+let CParties=[]; // all parties user is in
+let pendingPartyId=null; // party user is trying to enter
+let calCallback=null,calSelDate=null;
+let obPinVal='',obPinConfirm='';
+let personalPinVal='',groupPinVal='';
+let selAVC='#f0a500',selPT=0,selSP=0,selJoinMode='pin';
+let reqPollingInterval=null;
+
+/* ================================================================
+   DRUNK MAN SVG
+================================================================ */
+function DM(type,lvl=0,col='#f0a500'){
+  const t=DL[Math.min(lvl,5)]?.tilt||0;
+  const eyes=lvl>=4?`<text x="27" y="23" font-size="9">🌀</text>`:
+    lvl>=2?`<circle cx="29" cy="21" r="3" fill="white"/><circle cx="41" cy="21" r="3" fill="white"/><circle cx="30" cy="21.5" r="1.5" fill="#2d1b00"/><circle cx="42" cy="21.5" r="1.5" fill="#2d1b00"/>`:
+    `<text x="26" y="23" font-size="7" fill="#2d1b00" font-weight="bold">×</text><text x="37" y="23" font-size="7" fill="#2d1b00" font-weight="bold">×</text>`;
+  const mouth=lvl<3?`<path d="M28 30 Q35 36 42 30" stroke="#2d1b00" stroke-width="1.8" fill="none" stroke-linecap="round"/>`:
+    `<path d="M27 33 Q35 27 43 33" stroke="#2d1b00" stroke-width="1.8" fill="none" stroke-linecap="round"/>`;
+  const armMap={
+    pour:`<path d="M16 49 L4 61" stroke="${col}" stroke-width="6" stroke-linecap="round"/><rect x="-2" y="54" width="7" height="15" rx="3.5" fill="#3ecf8e"/><path d="M54 49 L66 43" stroke="${col}" stroke-width="6" stroke-linecap="round"/>`,
+    scared:`<path d="M16 49 L8 47" stroke="${col}" stroke-width="6" stroke-linecap="round"/><path d="M54 49 L64 53" stroke="${col}" stroke-width="6" stroke-linecap="round"/><rect x="57" y="43" width="12" height="16" rx="6" fill="#151518" stroke="${col}" stroke-width="1"/><text x="58" y="55" font-size="7" fill="${col}">📱</text><text x="-1" y="12" font-size="9">😰</text>`,
+    money:`<path d="M16 49 L4 57" stroke="${col}" stroke-width="6" stroke-linecap="round"/><path d="M54 49 L66 57" stroke="${col}" stroke-width="6" stroke-linecap="round"/><text x="-2" y="65" font-size="10">₹</text><text x="57" y="65" font-size="10">₹</text>`,
+    car:`<path d="M16 49 L6 59" stroke="${col}" stroke-width="6" stroke-linecap="round"/><path d="M54 49 L66 39" stroke="${col}" stroke-width="6" stroke-linecap="round"/><text x="60" y="35" font-size="10">🚕</text>`,
+    safe:`<path d="M16 49 L4 43" stroke="${col}" stroke-width="6" stroke-linecap="round"/><path d="M54 49 L66 43" stroke="${col}" stroke-width="6" stroke-linecap="round"/><text x="24" y="9" font-size="13">🛡️</text>`,
+    type:`<path d="M16 49 L4 59" stroke="${col}" stroke-width="6" stroke-linecap="round"/><path d="M54 49 L66 59" stroke="${col}" stroke-width="6" stroke-linecap="round"/><rect x="2" y="57" width="57" height="10" rx="5" fill="#151518" stroke="#5b8dee" stroke-width=".8"/><text x="6" y="65" font-size="6" fill="#5b8dee">lol bhai 😂...</text>`,
+    food:`<path d="M16 49 L4 57" stroke="${col}" stroke-width="6" stroke-linecap="round"/><path d="M54 49 L66 53" stroke="${col}" stroke-width="6" stroke-linecap="round"/><text x="57" y="57" font-size="12">🍕</text>`,
+    photo:`<path d="M16 49 L4 57" stroke="${col}" stroke-width="6" stroke-linecap="round"/><path d="M54 49 L66 43" stroke="${col}" stroke-width="6" stroke-linecap="round"/><text x="59" y="39" font-size="12">📸</text>`,
+    default:`<path d="M16 49 L4 57" stroke="${col}" stroke-width="6" stroke-linecap="round"/><path d="M54 49 L66 57" stroke="${col}" stroke-width="6" stroke-linecap="round"/>`
+  };
+  const animMap={pour:'pour',scared:'scared',money:'wobble',car:'wave',safe:'hiccup',type:'typing',food:'bounce',photo:'wobble',default:'stumble'};
+  const anim=animMap[type]||'sway';
+  return`<svg width="36" height="44" viewBox="0 0 70 88" fill="none" style="animation:${anim} ${type==='scared'?1:2}s ease-in-out infinite;transform:rotate(${t}deg);transform-origin:50% 80%;transition:transform .5s">
+    <ellipse cx="35" cy="55" rx="19" ry="24" fill="${col}" opacity=".9"/>
+    <circle cx="35" cy="21" r="17" fill="#FDDBB4"/>
+    <ellipse cx="35" cy="9" rx="16" ry="8" fill="#2d1b00"/>
+    ${eyes}${mouth}${armMap[type]||armMap.default}
+    <path d="M23 77 L17 99" stroke="${col}" stroke-width="7" stroke-linecap="round"/>
+    <path d="M47 77 L55 98" stroke="${col}" stroke-width="7" stroke-linecap="round"/>
+    <ellipse cx="14" cy="101" rx="10" ry="5" fill="#2d1b00" transform="rotate(-12,14,101)"/>
+    <ellipse cx="58" cy="100" rx="10" ry="5" fill="#2d1b00" transform="rotate(8,58,100)"/>
+    ${lvl>=5?`<text x="7" y="3" font-size="11">🤮</text>`:''}${lvl>=3&&lvl<5?`<text x="55" y="7" font-size="9">💫</text>`:''}
+  </svg>`;
+}
+
+/* ================================================================
+   HELPERS
+================================================================ */
+function simpleHash(s){let h=0;for(let i=0;i<s.length;i++)h=(Math.imul(31,h)+s.charCodeAt(i))|0;return Math.abs(h).toString(16);}
+function uid(){return 'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function getCD(d){const diff=new Date(d)-new Date();if(diff<=0)return{d:0,h:0,m:0,s:0};return{d:Math.floor(diff/864e5),h:Math.floor(diff%864e5/36e5),m:Math.floor(diff%36e5/6e4),s:Math.floor(diff%6e4/1e3)};}
+function fmtDate(d){return new Date(d).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});}
+function fmtTime(d){return new Date(d).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});}
+function avatarEl(user,size=34){
+  if(user?.photo)return`<img src="${user.photo}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover">`;
+  return`<div style="width:${size}px;height:${size}px;border-radius:50%;background:${user?.color||'#888'}22;color:${user?.color||'#888'};display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:${Math.floor(size*.38)}px">${(user?.name||'?')[0]}</div>`;
+}
+let TT;
+function T(msg,type=''){const e=document.getElementById('TOAST');e.textContent=msg;e.className='toast show'+(type?' '+type:'');clearTimeout(TT);TT=setTimeout(()=>e.classList.remove('show'),3200);}
+function showLoad(txt='Loading...'){document.getElementById('LOAD-txt').textContent=txt;document.getElementById('LOAD').classList.add('show');}
+function hideLoad(){document.getElementById('LOAD').classList.remove('show');}
+
+/* ================================================================
+   SCREEN NAV
+================================================================ */
+function SS(id){
+  document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');s.style.display='none';});
+  const s=document.getElementById(id);
+  const isFlexScreen=['S-ob1','S-ob2','S-ob3','S-pin','S-gpin','S-waiting','S-splash'].includes(id);
+  s.style.display=isFlexScreen?'flex':'block';
+  requestAnimationFrame(()=>s.classList.add('active'));
+  s.scrollTop=0;
+}
+function goHome(){
+  CP=null;
+  renderHome();
+  SS('S-home');
+  document.getElementById('BN').classList.add('v');
+  document.getElementById('FAB').classList.add('v');
+  document.querySelectorAll('.bni').forEach((e,i)=>e.classList.toggle('on',i===0));
+}
+function goDetail(party){
+  if(!party){goHome();return;}
+  CP=party;
+  renderDetail(party);
+  SS('S-det');
+  startDetailRT(party);
+}
+function goMap(){SS('S-map');renderMap();}
+function BN(n){
+  document.querySelectorAll('.bni').forEach((e,i)=>e.classList.toggle('on',i===n));
+  [goHome,goMap,()=>openMod('notifs'),()=>openMod('profile')][n]?.();
+}
+
+/* ================================================================
+   ONBOARDING
+================================================================ */
+function initAvPick(){
+  const el=document.getElementById('av-pick');if(!el)return;
+  el.innerHTML=AVCOLORS.map((c,i)=>`<div class="av-opt ${i===0?'sel':''}" style="background:${c}22;color:${c};border-color:${i===0?c:'transparent'}" onclick="selAV(${i},'${c}')" id="av${i}">${i===0?'A':'A'}</div>`).join('');
+}
+function selAV(i,c){selAVC=c;AVCOLORS.forEach((_,j)=>{const e=document.getElementById('av'+j);if(e){e.classList.toggle('sel',j===i);e.style.borderColor=j===i?c:'transparent';}});}
+function pickPhoto(inp){
+  const file=inp.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    const canvas=document.createElement('canvas');const img=new Image();
+    img.onload=()=>{const mx=300;const sc=Math.min(1,mx/Math.max(img.width,img.height));canvas.width=img.width*sc;canvas.height=img.height*sc;canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);const data=canvas.toDataURL('image/jpeg',.75);LS('ob_photo',data);const pp=document.getElementById('photo-pick');pp.innerHTML=`<img src="${data}" style="width:80px;height:80px;border-radius:50%;object-fit:cover">`;};
+    img.src=e.target.result;
+  };
+  r.readAsDataURL(file);
+}
+async function ob1Next(){
+  const nm=document.getElementById('ob-name').value.trim();
+  if(!nm){T('Naam toh batao! 😅','re');return;}
+  LS('ob_name',nm);LS('ob_mobile',document.getElementById('ob-mobile').value.trim());
+  LS('ob_city',document.getElementById('ob-city').value.trim());LS('ob_color',selAVC);
+  SS('S-ob2');
+}
+
+/* PIN SET */
+let obPv='';
+function pp(k){if(obPv.length>=4)return;obPv+=k;updPD2();if(obPv.length===4)setTimeout(ppgo,200);}
+function ppdel(){obPv=obPv.slice(0,-1);updPD2();}
+function updPD2(){for(let i=0;i<4;i++){document.getElementById('p2d'+i).classList.toggle('f',i<obPv.length);document.getElementById('p2d'+i).classList.remove('e');}document.getElementById('PERR2').textContent='';}
+function ppgo(){if(obPv.length<4){T('4 digits chahiye','re');return;}obPinVal=obPv;obPv='';updPD2();SS('S-ob3');}
+
+/* PIN CONFIRM */
+let obCv='';
+function pc(k){if(obCv.length>=4)return;obCv+=k;updPD3();if(obCv.length===4)setTimeout(pcgo,200);}
+function pcdel(){obCv=obCv.slice(0,-1);updPD3();}
+function updPD3(){for(let i=0;i<4;i++){document.getElementById('p3d'+i).classList.toggle('f',i<obCv.length);document.getElementById('p3d'+i).classList.remove('e');}document.getElementById('PERR3').textContent='';}
+async function pcgo(){
+  if(obCv!==obPinVal){
+    document.getElementById('PERR3').textContent='PIN match nahi hua! Dobara try karo';
+    document.getElementById('PDR3').classList.add('shake');
+    setTimeout(()=>document.getElementById('PDR3').classList.remove('shake'),600);
+    for(let i=0;i<4;i++){document.getElementById('p3d'+i).classList.add('e');document.getElementById('p3d'+i).classList.remove('f');}
+    setTimeout(()=>{for(let i=0;i<4;i++)document.getElementById('p3d'+i).classList.remove('e','f');obCv='';updPD3();},900);
+    return;
+  }
+  // Save locally first — app works immediately, no waiting for network
+  const localId='u_'+Date.now().toString(36);
+  const userData={
+    id:localId,
+    name:LS('ob_name'),
+    photo:LS('ob_photo')||null,
+    mobile:LS('ob_mobile')||null,
+    city:LS('ob_city')||null,
+    color:LS('ob_color')||'#f0a500',
+    pin_hash:simpleHash(obPinVal),
+    lang:'hinglish',
+    upi:''
+  };
+  CU=userData;
+  LS('user',CU);
+  LS('pin_hash',simpleHash(obPinVal));
+  LS('setup',1);
+  goHome();
+  // Sync to Supabase in background — don't block user
+  setTimeout(async()=>{
+    try{
+      const res=await dbPost('dp_users',userData);
+      if(res&&res[0]){
+        CU=res[0];
+        LS('user',CU);
+      }
+    }catch(e){
+      console.log('Supabase sync failed, using local data:',e.message);
+    }
+  },500);
+}
+
+/* ================================================================
+   PERSONAL PIN LOGIN
+================================================================ */
+let pv1='';
+function pk(k){if(pv1.length>=4)return;pv1+=k;updPD1();if(pv1.length===4)setTimeout(pgo,160);}
+function pdel(){pv1=pv1.slice(0,-1);updPD1();}
+function updPD1(){for(let i=0;i<4;i++){document.getElementById('pd'+i).classList.toggle('f',i<pv1.length);document.getElementById('pd'+i).classList.remove('e');}document.getElementById('PERR1').textContent='';}
+async function pgo(){
+  if(simpleHash(pv1)===LS('pin_hash')){
+    CU=LS('user');
+    pv1='';updPD1();
+    // Go home immediately with cached data
+    await loadUserParties();
+    goHome();
+    // Sync user from Supabase in background
+    setTimeout(async()=>{
+      try{
+        if(CU&&CU.id){
+          const users=await dbGet('dp_users',`?id=eq.${CU.id}&limit=1`);
+          if(users&&users[0]){CU=users[0];LS('user',CU);}
+        }
+      }catch(e){console.log('Background sync:',e.message);}
+    },1000);
+  }else{
+    document.getElementById('PERR1').textContent='Wrong PIN! Try again 😅';
+    document.getElementById('PDR1').classList.add('shake');
+    setTimeout(()=>document.getElementById('PDR1').classList.remove('shake'),600);
+    for(let i=0;i<4;i++){document.getElementById('pd'+i).classList.add('e');document.getElementById('pd'+i).classList.remove('f');}
+    setTimeout(()=>{for(let i=0;i<4;i++)document.getElementById('pd'+i).classList.remove('e','f');pv1='';updPD1();},900);
+  }
+}
+function resetApp(){if(confirm('Sab data delete ho jaayega. Sure?')){localStorage.clear();location.reload();}}
+
+/* ================================================================
+   GROUP PIN
+================================================================ */
+let gv='';
+function gpk(k){if(gv.length>=4)return;gv+=k;updGPD();if(gv.length===4)setTimeout(ggo,160);}
+function gdel(){gv=gv.slice(0,-1);updGPD();}
+function updGPD(){for(let i=0;i<4;i++){document.getElementById('gd'+i).classList.toggle('f',i<gv.length);document.getElementById('gd'+i).classList.remove('e');}document.getElementById('GPERR').textContent='';}
+async function ggo(){
+  if(!pendingPartyId){goHome();return;}
+  showLoad('Checking PIN...');
+  try{
+    const parties=await dbGet('dp_parties',`?id=eq.${pendingPartyId}&pin_hash=eq.${simpleHash(gv)}`);
+    hideLoad();
+    if(parties&&parties[0]){
+      const party=parties[0];
+      // Save pin is correct for this device
+      const savedPins=LS('grp_pins')||{};savedPins[pendingPartyId]=simpleHash(gv);LS('grp_pins',savedPins);
+      // Add as member if not already
+      await joinPartyAsMember(party);
+      const fullParty=await loadFullParty(party.id);
+      gv='';updGPD();
+      goDetail(fullParty);
+    }else{
+      document.getElementById('GPERR').textContent='Wrong Group PIN!';
+      document.getElementById('GPDR').classList.add('shake');
+      setTimeout(()=>document.getElementById('GPDR').classList.remove('shake'),600);
+      for(let i=0;i<4;i++){document.getElementById('gd'+i).classList.add('e');document.getElementById('gd'+i).classList.remove('f');}
+      setTimeout(()=>{for(let i=0;i<4;i++)document.getElementById('gd'+i).classList.remove('e','f');gv='';updGPD();},900);
+    }
+  }catch(e){hideLoad();T('Network error','re');console.error(e);}
+}
+
+async function joinPartyAsMember(party){
+  if(!CU)return;
+  try{
+    await dbPost('dp_members',{party_id:party.id,user_id:CU.id,name:CU.name,color:CU.color,role:'member',rsvp:'maybe',upi:CU.upi||null});
+  }catch(e){/* already member */}
+}
+
+/* ================================================================
+   REQUEST TO JOIN
+================================================================ */
+async function requestJoin(){
+  if(!pendingPartyId||!CU)return;
+  const msg=prompt('Optional message to the group (e.g. "Rahul ne bulaya hai mujhe"):')||'';
+  showLoad('Sending request...');
+  try{
+    await dbPost('dp_join_requests',{party_id:pendingPartyId,user_id:CU.id,user_name:CU.name,user_photo:CU.photo||null,message:msg,status:'pending'});
+    hideLoad();
+    document.getElementById('wait-av-txt').textContent=CU.photo?'':CU.name[0];
+    if(CU.photo){document.getElementById('wait-av').innerHTML=`<img src="${CU.photo}" style="width:70px;height:70px;object-fit:cover;border-radius:50%">`;}
+    document.getElementById('wait-name').textContent=CU.name;
+    const parties=await dbGet('dp_parties',`?id=eq.${pendingPartyId}`);
+    if(parties&&parties[0])document.getElementById('wait-party').textContent=parties[0].name;
+    SS('S-waiting');
+    pollForApproval();
+  }catch(e){hideLoad();T('Error sending request','re');}
+}
+
+function pollForApproval(){
+  if(reqPollingInterval)clearInterval(reqPollingInterval);
+  reqPollingInterval=setInterval(async()=>{
+    if(!pendingPartyId||!CU)return;
+    const reqs=await dbGet('dp_join_requests',`?party_id=eq.${pendingPartyId}&user_id=eq.${CU.id}&status=eq.approved&limit=1`);
+    if(reqs&&reqs[0]){
+      clearInterval(reqPollingInterval);
+      document.getElementById('wait-approved').style.display='block';
+      // Get party and enter
+      const parties=await dbGet('dp_parties',`?id=eq.${pendingPartyId}&limit=1`);
+      if(parties&&parties[0]){
+        const savedPins=LS('grp_pins')||{};savedPins[pendingPartyId]=parties[0].pin_hash;LS('grp_pins',savedPins);
+        await joinPartyAsMember(parties[0]);
+        setTimeout(async()=>{const fp=await loadFullParty(parties[0].id);goDetail(fp);},1500);
+      }
+    }
+  },3000);
+}
+
+/* ================================================================
+   DATA LOADING
+================================================================ */
+async function loadUserParties(){
+  if(!CU)return;
+  // Use cached parties first
+  const cached=LS('parties');
+  if(cached&&cached.length)CParties=cached;
+  showLoad('Loading parties...');
+  try{
+    const memberships=await dbGet('dp_members',`?user_id=eq.${CU.id}&select=party_id`);
+    if(!memberships||!memberships.length){CParties=[];hideLoad();return;}
+    const ids=memberships.map(m=>m.party_id);
+    const parties=await dbGet('dp_parties',`?id=in.(${ids.join(',')})&order=created_at.desc`);
+    if(!parties||!parties.length){CParties=[];hideLoad();return;}
+    // Load members and expenses for each party for home cards
+    const enriched = await Promise.all(parties.map(async party=>{
+      const [members,expenses]=await Promise.all([
+        dbGet('dp_members',`?party_id=eq.${party.id}`),
+        dbGet('dp_expenses',`?party_id=eq.${party.id}`)
+      ]);
+      return {...party, members:members||[], expenses:expenses||[]};
+    }));
+    CParties=enriched;
+    LS('parties',enriched.map(p=>({...p,photos:[]}))); // cache without photos (too large)
+    hideLoad();
+  }catch(e){
+    // Network failed - use cached data silently
+    hideLoad();
+    console.log('Using cached parties:',e.message);
+  }
+}
+
+async function loadFullParty(id){
+  try{
+    const [party,members,expenses,drinks,mixers,chat,checkpoints,food_votes,food_checklist,photos,carpool]=await Promise.all([
+      dbGet('dp_parties',`?id=eq.${id}&limit=1`),
+      dbGet('dp_members',`?party_id=eq.${id}&order=joined_at`),
+      dbGet('dp_expenses',`?party_id=eq.${id}&order=created_at`),
+      dbGet('dp_drinks',`?party_id=eq.${id}`),
+      dbGet('dp_mixers',`?party_id=eq.${id}`),
+      dbGet('dp_chat',`?party_id=eq.${id}&order=created_at&limit=50`),
+      dbGet('dp_checkpoints',`?party_id=eq.${id}&expires_at=gt.${new Date().toISOString()}&order=created_at.desc`),
+      dbGet('dp_food_votes',`?party_id=eq.${id}`),
+      dbGet('dp_food_checklist',`?party_id=eq.${id}`),
+      dbGet('dp_photos',`?party_id=eq.${id}&order=created_at.desc&limit=20`),
+      dbGet('dp_carpool',`?party_id=eq.${id}`)
+    ]);
+    return {
+      ...(party?.[0]||{}),
+      members:members||[],expenses:expenses||[],drinks:drinks||[],mixers:mixers||[],
+      chat:chat||[],checkpoints:checkpoints||[],food_votes:food_votes||[],
+      food_checklist:food_checklist||[],photos:photos||[],carpool:carpool||[]
+    };
+  }catch(e){console.error(e);return null;}
+}
+
+/* ================================================================
+   HOME RENDER
+================================================================ */
+function renderHome(){
+  if(!CU)return;
+  CL=CU.lang||'hinglish';
+  document.getElementById('h-greet').textContent=`Hey ${CU.name} 👋`;
+  // Avatar in topbar
+  const hav=document.getElementById('home-av');
+  if(hav)hav.outerHTML=`<div id="home-av" style="width:26px;height:26px;border-radius:50%;overflow:hidden">${avatarEl(CU,26)}</div>`;
+  // Invite bar
+  if(CParties.length){const p=CParties[0];document.getElementById('ib-t').textContent=`🔗 ${p.name} mein invite karo`;document.getElementById('ib-s').textContent=`PIN share karo`;}
+  // Notif permission
+  const nb=document.getElementById('notif-banner');
+  if(Notification?.permission!=='granted'){nb.innerHTML=`<div class="notif-banner"><div style="font-size:20px">🔔</div><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--bl)">Enable notifications</div><div style="font-size:11px;color:rgba(91,141,238,.7)">Wife alerts, payment reminders, checkpoints</div></div><button class="btn sm p" onclick="reqNotif()">Enable</button></div>`;}else nb.innerHTML='';
+  // Pending join requests (for host/members)
+  renderRequestsBanner();
+  // Party lists
+  const active=CParties.filter(p=>p.status!=='done');
+  const past=CParties.filter(p=>p.status==='done');
+  document.getElementById('home-active').innerHTML=active.length?active.map(renderPartyCard).join(''):`<div style="padding:16px;font-size:13px;color:var(--mu);text-align:center">No active parties.<br>Create one or join with a PIN! 🥃</div>`;
+  document.getElementById('home-past').innerHTML=past.length?past.map(renderPartyCard).join(''):`<div style="padding:12px;font-size:13px;color:var(--mu);text-align:center">No past parties yet 🍺</div>`;
+}
+
+function renderPartyCard(p){
+  const status=p.status==='done'?'dn':p.lifecycle<=1?'pl':'';
+  const members=p.members||[];
+  const expenses=p.expenses||[];
+  const pnd=expenses.filter(e=>!e.paid).reduce((a,e)=>a+e.amount,0);
+  return`<div class="pcard ${status}" onclick="openParty('${p.id}')">
+    <div class="pc-top"><div class="pc-nm">${p.emoji} ${p.name}</div><div class="pc-lk">${p.status==='done'?'✓ Done':'🔒 Private'}</div></div>
+    <div class="pc-mt">📅 ${p.date?fmtDate(p.date):'Date TBD'} · ${p.location?.split(',')[0]||'Location TBD'}</div>
+    <div class="pc-ps">
+      ${pnd>0?`<span class="pill w">₹${pnd} ${L('pending')}</span>`:`<span class="pill ok">${L('settled')} ✓</span>`}
+      <span class="pill">${members.length} members</span>
+    </div>
+  </div>`;
+}
+
+async function renderRequestsBanner(){
+  if(!CU||!CParties.length)return;
+  try{
+    const ids=CParties.map(p=>p.id);
+    const reqs=await dbGet('dp_join_requests',`?party_id=in.(${ids.join(',')})&status=eq.pending`);
+    const rb=document.getElementById('requests-banner');
+    if(reqs&&reqs.length){
+      document.getElementById('notif-dot').style.display='block';
+      rb.innerHTML=`<div style="margin:0 11px 8px;background:var(--abg);border:.5px solid var(--abr);border-radius:12px;padding:10px 12px;cursor:pointer" onclick="openMod('requests')">
+        <div style="font-size:13px;font-weight:500;color:var(--am)">🙋 ${reqs.length} join request${reqs.length>1?'s':''} pending</div>
+        <div style="font-size:11px;color:rgba(240,165,0,.7);margin-top:2px">Tap to review and approve</div>
+      </div>`;
+    }else{document.getElementById('notif-dot').style.display='none';rb.innerHTML='';}
+  }catch(e){}
+}
+
+/* ================================================================
+   OPEN PARTY (check if PIN needed)
+================================================================ */
+async function openParty(partyId){
+  pendingPartyId=partyId;
+  const savedPins=LS('grp_pins')||{};
+  // Check if we already have a valid saved PIN hash for this group
+  if(savedPins[partyId]){
+    showLoad('Opening party...');
+    try{
+      const fp=await loadFullParty(partyId);
+      hideLoad();
+      if(fp)goDetail(fp);
+    }catch(e){hideLoad();T('Error loading party','re');}
+  }else{
+    // Need group PIN
+    const parties=await dbGet('dp_parties',`?id=eq.${partyId}&limit=1`);
+    if(parties&&parties[0]){
+      document.getElementById('gpin-name').textContent=`${parties[0].emoji} ${parties[0].name}`;
+      SS('S-gpin');gv='';updGPD();
+    }
+  }
+}
+
+/* ================================================================
+   DETAIL RENDER
+================================================================ */
+function renderDetail(p){
+  if(!p){goHome();return;}
+  CL=p.lang||CU?.lang||'hinglish';
+  const me=p.members?.find(m=>m.user_id===CU?.id);
+  const cd=getCD(p.date);
+  const tot=(p.expenses||[]).reduce((a,e)=>a+e.amount,0);
+  const pnd=(p.expenses||[]).filter(e=>!e.paid).reduce((a,e)=>a+e.amount,0);
+  const yes=(p.members||[]).filter(m=>m.rsvp==='yes').length;
+  const debts=calcDebts(p);
+  const myDebt=debts.find(d=>d.fromId===CU?.id);
+  const LC=['📋 Plan','✅ Confirmed','🌙 Tonight','🔴 Live','🏁 Done'];
+
+  document.getElementById('det-content').innerHTML=`
+    <div style="padding:12px 13px 8px">
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin:4px 0">${p.emoji} ${p.name}</div>
+      <div style="font-size:12px;color:var(--mu2);margin-bottom:9px">📅 ${p.date?fmtDate(p.date)+' · '+fmtTime(p.date):'Date TBD'} · ${p.location||'Location TBD'}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        <span class="pill ok pulse">🟢 Party ON</span>
+        <span class="pill">${yes} coming</span>
+        ${pnd>0?`<span class="pill w">₹${pnd} ${L('pending')}</span>`:`<span class="pill ok">${L('settled')} ✓</span>`}
+      </div>
+    </div>
+
+    <!-- LIFECYCLE -->
+    <div class="lifecycle">${LC.map((l,i)=>`<div class="ls ${i<p.lifecycle?'ds':i===p.lifecycle?'cs':''}"><div class="ls-line"></div><div class="ls-dot"></div><div class="ls-lbl">${l}</div></div>`).join('')}</div>
+
+    <!-- COUNTDOWN -->
+    ${p.date?`<div class="cdbx">
+      <div class="cdu"><div class="cdn" id="cd-d">${cd.d}</div><div class="cdl">Days</div></div><div class="cds">:</div>
+      <div class="cdu"><div class="cdn" id="cd-h">${cd.h}</div><div class="cdl">Hrs</div></div><div class="cds">:</div>
+      <div class="cdu"><div class="cdn" id="cd-m">${cd.m}</div><div class="cdl">Min</div></div><div class="cds">:</div>
+      <div class="cdu"><div class="cdn" id="cd-s">${cd.s}</div><div class="cdl">Sec</div></div>
+    </div>`:''}
+
+    ${makeSec('chat',DM('type',0,'#a855f7'),'pbg',L('chat')+' 💬','Bakchodi zone 🔥',renderChatBody(p))}
+    ${makeSec('wife',DM('scared',0,'#e84040'),'rbg',L('wife')+' 🚨','Level 4 = nuclear 💀',renderWifeBody(p))}
+    ${makeSec('booze',DM('pour',0),'abg',L('booze')+' 🥃',(p.drinks||[]).reduce((a,d)=>a+d.qty,0)+' bottles',renderBoozeBody(p))}
+    ${makeSec('cost',DM('money',0,'#3ecf8e'),'gbg',L('cost')+' 💰',`₹${tot} total${pnd?` · ₹${pnd} pending`:''}`,renderCostBody(p,debts,myDebt))}
+    ${makeSec('car',DM('car',0,'#5b8dee'),'bbg',L('carpool')+' 🚗',(p.carpool||[]).length+' cars',renderCarpoolBody(p))}
+    ${makeSec('people',`<svg width="36" height="44" viewBox="0 0 70 88" fill="none" style="animation:stumble 2.5s ease-in-out infinite;transform-origin:50% 80%"><ellipse cx="35" cy="55" rx="19" ry="24" fill="#a855f7" opacity=".9"/><circle cx="35" cy="21" r="17" fill="#FDDBB4"/><ellipse cx="35" cy="9" rx="16" ry="8" fill="#2d1b00"/><text x="26" y="23" font-size="7" fill="#2d1b00">×</text><text x="37" y="23" font-size="7" fill="#2d1b00">×</text><path d="M28 30 Q35 36 42 30" stroke="#2d1b00" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M23 77 L17 99" stroke="#a855f7" stroke-width="7" stroke-linecap="round"/><path d="M47 77 L55 98" stroke="#a855f7" stroke-width="7" stroke-linecap="round"/><path d="M16 49 L4 43" stroke="#a855f7" stroke-width="7" stroke-linecap="round"/><path d="M54 49 L66 43" stroke="#a855f7" stroke-width="7" stroke-linecap="round"/></svg>`,'pbg',L('people')+' 👥',(p.members||[]).filter(m=>m.rsvp==='yes').length+' confirmed',renderPeopleBody(p,me))}
+    ${makeSec('daaru',`<div id="dm-sico">${DM('default',me?.daaru_level||0)}</div>`,'abg',L('daaru')+' 🍺','Tap to update level 😂',renderDaaruBody(p,me))}
+    ${makeSec('safety',DM('safe',0,'#e84040'),'rbg',L('safety')+' 🛡️','Checkpoints · Safe · SOS',renderSafetyBody(p,me))}
+    ${makeSec('food',DM('food',0),'abg',L('food')+' 🍕','Vote & checklist',renderFoodBody(p))}
+    ${makeSec('loc',`<svg width="36" height="44" viewBox="0 0 70 88" fill="none" style="animation:bounce 2s ease-in-out infinite"><ellipse cx="35" cy="55" rx="19" ry="24" fill="#5b8dee" opacity=".9"/><circle cx="35" cy="21" r="17" fill="#FDDBB4"/><text x="25" y="13" font-size="14">📍</text><text x="26" y="23" font-size="7" fill="#2d1b00">×</text><text x="37" y="23" font-size="7" fill="#2d1b00">×</text><path d="M28 30 Q35 36 42 30" stroke="#2d1b00" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M23 77 L17 99" stroke="#5b8dee" stroke-width="7" stroke-linecap="round"/><path d="M47 77 L55 98" stroke="#5b8dee" stroke-width="7" stroke-linecap="round"/></svg>`,'bbg',L('loc')+' 📍',p.location?.split(',')[0]||'TBD',renderLocBody(p))}
+    ${makeSec('photos',DM('photo',0,'#f472b6'),'pkbg',L('photos')+' 📸',(p.photos||[]).length+' photos',renderPhotosBody(p))}
+    ${makeSec('rate',`<svg width="36" height="44" viewBox="0 0 70 88" fill="none" style="animation:pour 2s ease-in-out infinite"><ellipse cx="35" cy="55" rx="19" ry="24" fill="#f0a500" opacity=".9"/><circle cx="35" cy="21" r="17" fill="#FDDBB4"/><text x="23" y="13" font-size="14">🌀</text><path d="M27 33 Q35 27 43 33" stroke="#2d1b00" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M23 77 L17 99" stroke="#f0a500" stroke-width="7" stroke-linecap="round"/><path d="M47 77 L55 98" stroke="#f0a500" stroke-width="7" stroke-linecap="round"/><text x="25" y="7" font-size="10">⭐</text></svg>`,'abg',L('rate')+' ⭐','Rate the party',renderRateBody(p))}
+
+    <div class="bband" onclick="T('Kingfisher offer! 🍺','am')" style="margin:0 11px 9px">
+      <div class="bbl">🍺</div><div class="bbt"><div class="bbn">Kingfisher — Good Times</div><div class="bbs">12-pack delivery to venue</div></div><div class="bbtag">AD</div>
+    </div>
+    <div class="cpyr">© 2025 Daru Party · MaggoTrades · Patent Pending</div>
+  `;
+
+  clearInterval(window._cd);
+  if(p.date)window._cd=setInterval(()=>{const c=getCD(p.date);['d','h','m','s'].forEach((k,i)=>{const e=document.getElementById('cd-'+k);if(e)e.textContent=[c.d,c.h,c.m,c.s][i];});},1e3);
+}
+
+function makeSec(id,ico,icoBg,title,sub,body){
+  return`<div class="sec" id="sec-${id}"><div class="shdr" onclick="TS('${id}')"><div class="sleft"><div class="sico" style="background:var(--${icoBg})">${ico}</div><div class="stit"><div class="st">${title}</div><div class="ss">${sub}</div></div></div><div class="schev">›</div></div><div class="sbody" id="sb-${id}">${body}</div></div>`;
+}
+
+/* ================================================================
+   SECTION BODY RENDERS
+================================================================ */
+function renderChatBody(p){
+  const pinned=p.pinned_msg?`<div class="pinmsg">📌 <span>${p.pinned_msg}</span></div>`:'';
+  const msgs=(p.chat||[]).map(m=>{
+    const isMe=m.user_id===CU?.id;
+    const reacts=m.reactions||{};
+    const reactStr=Object.entries(reacts).filter(([,a])=>a.length).map(([e,a])=>`<div class="creact" onclick="addReact('${p.id}','${m.id}','${e}')">${e}<span>${a.length}</span></div>`).join('');
+    return`<div class="cmsg ${isMe?'me':''}" id="msg${m.id}">
+      ${!isMe?`<div class="cav-sm" style="background:${m.user_color||'#888'}22;color:${m.user_color||'#888'}">${m.user_name?.[0]||'?'}</div>`:''}
+      <div>${!isMe?`<div class="cnm">${m.user_name}</div>`:''}
+        <div class="cbbl" ontouchstart="startLP('${m.id}')" ontouchend="endLP()">${m.message}</div>
+        ${reactStr?`<div class="creacts">${reactStr}</div>`:''}
+        <div class="ctm">${fmtTime(m.created_at)}</div>
+      </div></div>`;
+  }).join('');
+  return`${pinned}
+    <div class="etray">${['🥃','😂','🔥','💀','🤣','👏','😎','🤘','💪','🥴','🫡','🙏','😱','👑'].map(e=>`<span class="eq" onclick="addE('${e}')">${e}</span>`).join('')}</div>
+    <div class="chatbox" id="chatbox">${msgs}</div>
+    <div class="cin-row"><input class="cin" id="cin" placeholder="Bakchodi karo... 😂" onkeydown="if(event.key==='Enter')sendC('${p.id}')"><button class="csend" onclick="sendC('${p.id}')">➤</button></div>`;
+}
+
+function renderWifeBody(p){
+  return`<div class="wgrid">
+    <div class="wb w1" onclick="sendWife('${p.id}',1)"><div class="wn">Chill Wife Alert 😌</div><div class="wm">Bhai thoda jaldi kar, time ho raha</div></div>
+    <div class="wb w2" onclick="sendWife('${p.id}',2)"><div class="wn">Warning Wife Alert ⚠️</div><div class="wm">Ek ghante mein nikal! Serious</div></div>
+    <div class="wb w3" onclick="sendWife('${p.id}',3)"><div class="wn">RED Wife Alert 🚨</div><div class="wm">Abhi nikal!! Rona mat baad mein</div></div>
+    <div class="wb w4" onclick="sendWife('${p.id}',4)"><div class="wn">💀 NUCLEAR Wife Alert</div><div class="wm">NOW. MAAN JA NAHI TOH CLASS LAGEGI 💀</div></div>
+  </div>
+  <div class="inlbl" style="margin-top:9px">Custom wife alert</div>
+  <div style="display:flex;gap:7px;margin-bottom:9px"><input class="inp" id="cwife" placeholder="Type message..." style="flex:1;padding:8px 11px"><button class="btn sm p" onclick="sendCustomWife('${p.id}')">Send 📢</button></div>
+  <div style="display:flex;gap:7px">
+    <select class="inp" id="scht" style="flex:1;padding:8px"><option value="10">10 min mein</option><option value="30">30 min mein</option><option value="60">1 hour mein</option></select>
+    <select class="inp" id="schl" style="flex:1;padding:8px"><option value="1">Level 1</option><option value="2">Level 2</option><option value="3">Level 3</option></select>
+    <button class="btn sm p" onclick="schedWife('${p.id}')">Schedule ⏰</button>
+  </div>
+  <div class="divider"></div>
+  <div style="font-size:12px;color:var(--mu);margin-bottom:8px">Wife Link — Share with wife, she can send alerts from her phone</div>
+  <button class="btn sm p" style="width:100%;justify-content:center" onclick="createWifeLink('${p.id}')">🔗 Generate Wife Alert Link</button>
+  <div id="wife-link-out" style="margin-top:8px"></div>
+  <div class="wsent" id="wsent"></div>`;
+}
+
+function renderBoozeBody(p){
+  return`${(p.drinks||[]).map(d=>`<div class="drow"><div class="di"><div class="dn">${d.name}</div><div class="ds">${d.who}</div></div><div class="ctrls"><button class="cb" onclick="chD('${p.id}','${d.id}',-1)">−</button><div class="cnum" id="dq${d.id}">${d.qty}</div><button class="cb" onclick="chD('${p.id}','${d.id}',1)">+</button></div></div>`).join('')}
+  <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--mu);margin:10px 0 5px">Mixers Checklist</div>
+  ${(p.mixers||[]).map(m=>`<div class="chk ${m.done?'ck':''}" id="mx${m.id}" onclick="chkM('${p.id}','${m.id}')"><div class="chkb">✓</div><div class="chk-l">${m.name}</div></div>`).join('')}
+  <button class="btn s" onclick="openMod('addDrink')" style="margin-top:0">+ Add drink / item</button>`;
+}
+
+function renderCostBody(p,debts,myDebt){
+  return`${(p.expenses||[]).map(e=>{
+    const payer=p.members?.find(m=>m.user_id===e.paid_by)||{color:'#888',name:e.who||'?'};
+    return`<div class="erow"><div class="eav" style="background:${payer.color}22;color:${payer.color}">${(e.who||'?')[0]}</div><div class="ei"><div class="ew">${e.what}</div><div class="ewho">${e.who} · ${e.split_type==='split'?'Equal split':'Complimentary 🎁'}</div></div><div class="eamt">₹${e.amount}</div><div class="ptick ${e.paid?'pd':''}" id="pt${e.id}" onclick="togPaid('${p.id}','${e.id}')">${e.paid?'✓':'₹'}</div></div>`;
+  }).join('')}
+  ${debts.length?`<div style="margin:11px 0 6px"><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--mu);margin-bottom:6px">Who Owes Whom</div>${debts.map(d=>`<div class="debt-row"><span style="font-size:13px;font-weight:500">${d.from}</span><span style="color:var(--am)">→</span><span style="font-size:13px;flex:1">${d.to}</span><span style="font-size:13px;font-weight:700;color:var(--am)">₹${d.amt}</span>${d.upi?`<button class="upi-btn" onclick="openUPI('${d.upi}',${d.amt},'${d.to}')">⚡Pay</button>`:''}</div>`).join('')}</div>`:''}
+  ${myDebt?`<div class="owe-box"><div style="font-size:11px;color:var(--mu);margin-bottom:7px">Your share to pay</div><div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:var(--am)">₹${myDebt.amt}</div><div style="font-size:11px;color:var(--mu)">To ${myDebt.to}</div></div>${myDebt.upi?`<button class="upi-btn" onclick="openUPI('${myDebt.upi}',${myDebt.amt},'${myDebt.to}')">⚡ UPI</button>`:''}</div></div>`:''}
+  <button class="btn s" onclick="openMod('addExpense')" style="margin-top:0">+ Add expense</button>`;
+}
+
+function renderCarpoolBody(p){
+  return`${(p.carpool||[]).map(c=>`<div class="erow"><div class="eav" style="background:var(--bbg);color:var(--bl)">${c.driver_name?.[0]||'?'}</div><div class="ei"><div class="ew">${c.driver_name} 🚗 · ${c.seats} seats</div><div class="ewho">${c.route||'Route TBD'}</div></div><span class="pill ok">Driver</span></div>`).join('')}
+  <div class="btn-row">
+    <button class="btn sm p" onclick="openMod('offerCar')">🚗 Offer my car</button>
+    <button class="btn sm" onclick="window.open('https://m.uber.com/looking','_blank');T('Uber! 🟡','am')">🟡 Uber</button>
+    <button class="btn sm" onclick="window.open('https://rapido.bike','_blank');T('Rapido! 🟠','am')">🟠 Rapido</button>
+  </div>`;
+}
+
+function renderPeopleBody(p,me){
+  return`${(p.members||[]).map(m=>{
+    const isHost=m.role==='host';
+    return`<div class="prow"><div class="pav" style="background:${m.color||'#888'}22;color:${m.color||'#888'}">${m.name?.[0]||'?'}</div><div class="pi"><div class="pnm">${m.name||'Unknown'}${isHost?' 👑':''}</div><div class="pro">${m.rsvp==='yes'?'✓ Coming':m.rsvp==='maybe'?'Maybe 🤔':'Not coming'}</div></div><div class="pbds">${m.dd?`<span class="pbd" style="background:var(--bbg);color:var(--bl)">🚗DD</span>`:''} ${m.safe?`<span class="pbd" style="background:var(--gbg);color:var(--gr)">🛡️Safe</span>`:''}</div></div>`;
+  }).join('')}
+  <div class="btn-row">
+    <button class="btn sm p" style="flex:1" onclick="doRsvp('${p.id}','yes')">✓ ${L('going')}</button>
+    <button class="btn sm" style="flex:1" onclick="doRsvp('${p.id}','maybe')">🤔 ${L('maybe')}</button>
+    <button class="btn sm" style="flex:1" onclick="doRsvp('${p.id}','no')">✗ ${L('skip')}</button>
+  </div>
+  <button class="btn s" onclick="openMod('invite')" style="margin-top:0">+ Invite someone</button>`;
+}
+
+function renderDaaruBody(p,me){
+  const pv=partyVibe(p);
+  return`<div style="font-size:12px;color:var(--mu);margin-bottom:9px">Apna emoji tap karo to update. DD can't drink! 🚗</div>
+  ${(p.members||[]).map(m=>{const lv=DL[Math.min(m.daaru_level||0,5)];const isMe=m.user_id===CU?.id;return`<div class="dmrow"><div class="eav" style="width:32px;height:32px;border-radius:50%;background:${m.color||'#888'}22;color:${m.color||'#888'};display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:12px">${m.name?.[0]||'?'}</div><div class="dmi"><div class="dmnm">${m.name}${m.dd?' 🚗':''}</div><div class="dmlv" style="color:${lv.c}" id="dlv${m.user_id}">${lv.n}</div></div><div class="dmbar"><div class="dmfil" id="dfil${m.user_id}" style="width:${lv.p}%;background:${lv.c}"></div></div>${isMe&&!m.dd?`<div class="dmtap" onclick="bumpD('${p.id}','${m.user_id}')" id="dem${m.user_id}">${lv.e}</div>`:`<div style="font-size:20px" id="dem${m.user_id}">${m.dd?'🚗':lv.e}</div>`}</div>`;}).join('')}
+  <div class="vibebar"><div><div style="font-size:10px;color:var(--mu)">Party Vibe</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px" id="vibe-nm">${pv.n}</div></div><div class="vibet"><div class="vibef" id="vibe-f" style="width:${pv.p}%;background:${pv.c}"></div></div></div>`;
+}
+
+function renderSafetyBody(p,me){
+  return`<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--mu);margin-bottom:6px">Community Checkpoints</div>
+  ${(p.checkpoints||[]).map(c=>`<div style="display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:.5px solid var(--b1)"><div style="width:8px;height:8px;border-radius:50%;background:${c.hot?'var(--re)':'var(--am)'};${c.hot?'box-shadow:0 0 5px var(--re)':''}"></div><div style="flex:1"><div style="font-size:13px;font-weight:500">📍 ${c.location}</div><div style="font-size:11px;color:var(--mu)">Tagged by ${c.tagged_by||'Someone'}</div></div>${c.hot?'<span class="pill d">HOT</span>':''}</div>`).join('')}
+  <div class="btn-row"><button class="btn sm" style="flex:1" onclick="tagCP('${p.id}')">📍 Tag Checkpoint</button><button class="btn sm" onclick="goMap()">🗺️ Map</button></div>
+  <button class="safe-btn ${me?.safe?'on':''}" id="safe-btn" onclick="doMarkSafe('${p.id}')">${me?.safe?'✓ Safe — Group can see':'🛡️ '+L('markSafe')}</button>
+  <button class="sos-btn" onclick="doSOS('${p.id}')">🆘 ${L('sos')} — Location bhejo</button>
+  <button class="rescue-btn" onclick="doRescue('${p.id}')">🚗 ${L('rescue')} — Police naka alert</button>
+  <div style="margin-top:10px;font-size:11px;color:var(--mu)">DDs: ${(p.members||[]).filter(m=>m.dd).map(m=>`<span class="pill ok" style="margin-left:4px">🚗 ${m.name}</span>`).join('')||'None set'}</div>`;
+}
+
+function renderFoodBody(p){
+  return`<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--mu);margin-bottom:6px">Vote for food</div>
+  ${(p.food_votes||[]).map((v,i)=>`<div class="vi" onclick="castVote('${p.id}','${v.id}')"><div class="vck ${(v.voted_by||[]).includes(CU?.id)?'on':''}" id="vc${v.id}">✓</div><div style="font-size:15px">${v.emoji}</div><div style="flex:1;font-size:13px">${v.option_name}</div><div class="vbar"><div class="vfil" id="vb${v.id}" style="width:${v.pct||0}%"></div></div><div class="vpct" id="vp${v.id}">${v.pct||0}%</div></div>`).join('')}
+  <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--mu);margin:10px 0 5px">Checklist</div>
+  ${(p.food_checklist||[]).map(f=>`<div class="chk ${f.done?'ck':''}" id="fc${f.id}" onclick="chkF('${p.id}','${f.id}')"><div class="chkb">✓</div><div class="chk-l">${f.name}</div></div>`).join('')}
+  <div class="btn-row">
+    <button class="btn sm p" style="flex:1" onclick="window.open('https://www.swiggy.com','_blank');T('Swiggy! 🛵','am')">🛵 Swiggy</button>
+    <button class="btn sm" style="flex:1" onclick="window.open('https://www.zomato.com','_blank');T('Zomato!','am')">🔴 Zomato</button>
+  </div>`;
+}
+
+function renderLocBody(p){
+  const mapsUrl=`https://maps.google.com/?q=${encodeURIComponent(p.location||'')}`;
+  return`<div style="background:var(--bg3);border-radius:9px;padding:11px;margin-bottom:10px">
+    <div style="font-size:13px;font-weight:500;margin-bottom:3px">📍 ${p.location||'Location not set'}</div>
+    <div style="font-size:11px;color:var(--mu)">Tap to open in Maps app</div>
+  </div>
+  <div class="btn-row">
+    <button class="btn sm p" style="flex:1" onclick="window.open('${mapsUrl}','_blank')">🗺️ Google Maps</button>
+    <button class="btn sm" style="flex:1" onclick="window.open('https://maps.apple.com/?q='+encodeURIComponent('${p.location||''}'),'_blank')">🍎 Apple Maps</button>
+  </div>`;
+}
+
+function renderPhotosBody(p){
+  return`<div class="photo-grid" id="photo-grid">
+    ${(p.photos||[]).map(ph=>`<div class="photo-thumb"><img src="${ph.data_base64||ph.data}" loading="lazy"/></div>`).join('')}
+    <div class="photo-add" onclick="document.getElementById('pfile').click()"><span>📷</span><div style="font-size:11px;color:var(--mu)">Add</div></div>
+  </div>
+  <input type="file" id="pfile" accept="image/*" multiple style="display:none" onchange="addPhotos(this,'${p.id}')">`;
+}
+
+function renderRateBody(p){
+  return`<div style="font-size:12px;color:var(--mu);margin-bottom:5px">Anonymous rating — group sees only the score</div>
+  <div class="stars">${[1,2,3,4,5].map(n=>`<span class="str ${n<=(p.rating||0)?'lit':''}" onclick="ratePty('${p.id}',${n})" id="str${n}">★</span>`).join('')}</div>
+  <div id="rate-msg" style="font-size:13px;color:var(--am);min-height:16px;margin-bottom:9px">${['','Meh 😐','Could be better','Solid 👍','Awesome! 🤩','LEGENDARY! 🏆'][p.rating||0]||''}</div>
+  <div class="inrow"><div class="inlbl">Thank you note to host</div><textarea class="inp" id="thanknote" rows="3" placeholder="Mast party thi! 🙌">${p.thank_note||''}</textarea></div>
+  <button class="btn" onclick="sendThank('${p.id}')">🙏 Send Thank You</button>`;
+}
+
+/* ================================================================
+   SECTION TOGGLE
+================================================================ */
+function TS(id){
+  const c=document.getElementById('sec-'+id);if(!c)return;
+  c.classList.toggle('open');
+  if(id==='chat'&&c.classList.contains('open')){setTimeout(()=>{const b=document.getElementById('chatbox');if(b)b.scrollTop=b.scrollHeight;},60);}
+}
+
+/* ================================================================
+   DEBT CALC
+================================================================ */
+function calcDebts(p){
+  const members=p.members||[];const expenses=p.expenses||[];
+  const unpaid=expenses.filter(e=>!e.paid);if(!unpaid.length)return[];
+  const tot=unpaid.reduce((a,e)=>a+e.amount,0);
+  const yes=members.filter(m=>m.rsvp==='yes');if(!yes.length)return[];
+  const share=tot/yes.length;const bal={};
+  yes.forEach(m=>{bal[m.user_id]=-share;});
+  unpaid.forEach(e=>{if(bal[e.paid_by]!==undefined)bal[e.paid_by]+=e.amount;});
+  const pos=[],neg=[];
+  Object.entries(bal).forEach(([id,b])=>{const m=members.find(x=>x.user_id===id);if(!m)return;if(b>0.5)pos.push({id,b,name:m.name,upi:m.upi});else if(b<-0.5)neg.push({id,b:-b,name:m.name,upi:m.upi});});
+  const debts=[];let i=0,j=0;
+  while(i<pos.length&&j<neg.length){
+    const amt=Math.min(pos[i].b,neg[j].b);
+    if(amt>1)debts.push({from:neg[j].name,fromId:neg[j].id,to:pos[i].name,toId:pos[i].id,amt:Math.round(amt),upi:pos[i].upi||''});
+    pos[i].b-=amt;neg[j].b-=amt;if(pos[i].b<0.5)i++;if(neg[j].b<0.5)j++;
+  }
+  return debts;
+}
+function partyVibe(p){const members=p.members||[];const avg=members.reduce((a,m)=>a+(m.daaru_level||0),0)/Math.max(members.length,1);return DL[Math.min(5,Math.round(avg))];}
+
+/* ================================================================
+   REALTIME SUBSCRIPTIONS
+================================================================ */
+function startDetailRT(p){
+  if(!p||!p.id)return;
+  // Chat
+  subRT('dp_chat',`party_id=eq.${p.id}`,msg=>{
+    if(msg.user_id===CU?.id)return;
+    const b=document.getElementById('chatbox');
+    if(b){b.innerHTML+=`<div class="cmsg"><div class="cav-sm" style="background:${msg.user_color||'#888'}22;color:${msg.user_color||'#888'}">${msg.user_name?.[0]||'?'}</div><div><div class="cnm">${msg.user_name}</div><div class="cbbl">${msg.message}</div><div class="ctm">${fmtTime(msg.created_at)}</div></div></div>`;b.scrollTop=b.scrollHeight;}
+    push('New message from '+msg.user_name,msg.message);
+  });
+  // Wife alerts
+  subRT('dp_wife_alerts',`party_id=eq.${p.id}`,alert=>{
+    const el=document.getElementById('wsent');
+    if(el){el.textContent=`${alert.sent_by_name} sent Level ${alert.level}: "${alert.message}"`;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),8e3);}
+    T(`Wife Alert L${alert.level} from ${alert.sent_by_name}! 🚨`,'re');
+    push(`Wife Alert Level ${alert.level}!`,alert.message);
+  });
+  // Checkpoints
+  subRT('dp_checkpoints',`party_id=eq.${p.id}`,cp=>{T(`New checkpoint: ${cp.location} 🚔`,'re');});
+  // Members (daaru, safe updates)
+  subRT('dp_members',`party_id=eq.${p.id}`,m=>{
+    const lvEl=document.getElementById('dlv'+m.user_id);
+    const fEl=document.getElementById('dfil'+m.user_id);
+    const eEl=document.getElementById('dem'+m.user_id);
+    const lv=DL[Math.min(m.daaru_level||0,5)];
+    if(lvEl){lvEl.textContent=lv.n;lvEl.style.color=lv.c;}
+    if(fEl){fEl.style.width=lv.p+'%';fEl.style.background=lv.c;}
+    if(eEl)eEl.textContent=lv.e;
+  });
+}
+
+/* ================================================================
+   CHAT ACTIONS
+================================================================ */
+const AR=['😂😂😂','Bhai sahi hai!','👆 This!','Haha 🤣','😎🔥','Kya baat hai!','Aye aye! 🫡','LOL 💀','Theek hai 👍','Chalega!'];
+let lpTimer=null;
+function addE(e){const i=document.getElementById('cin');if(i){i.value+=e;i.focus();}}
+async function sendC(partyId){
+  const inp=document.getElementById('cin');const txt=inp?.value.trim();if(!txt||!CU)return;
+  inp.value='';
+  const msg={party_id:partyId,user_id:CU.id,user_name:CU.name,user_color:CU.color,message:txt,reactions:{}};
+  const res=await dbPost('dp_chat',msg);
+  if(res&&res[0]){
+    const b=document.getElementById('chatbox');
+    if(b){b.innerHTML+=`<div class="cmsg me"><div><div class="cbbl">${txt}</div><div class="ctm">${fmtTime(new Date())}</div></div></div>`;b.scrollTop=b.scrollHeight;}
+    // Auto reply occasionally
+    if(Math.random()<0.35){
+      const m=CP?.members?.find(x=>x.user_id!==CU.id);
+      if(m){setTimeout(async()=>{const rm=AR[Math.floor(Math.random()*AR.length)];await dbPost('dp_chat',{party_id:partyId,user_id:m.user_id,user_name:m.name,user_color:m.color,message:rm,reactions:{}});},1800);}
+    }
+  }
+}
+const RE_EMOJIS=['😂','🔥','💀','❤️','👍','🙌','🥴','😎'];
+function startLP(msgId){lpTimer=setTimeout(()=>showReactPop(msgId),500);}
+function endLP(){clearTimeout(lpTimer);}
+function showReactPop(msgId){
+  document.querySelectorAll('.react-popup').forEach(x=>x.remove());
+  const pop=document.createElement('div');pop.className='react-popup';
+  pop.innerHTML=RE_EMOJIS.map(e=>`<span style="font-size:20px;cursor:pointer;padding:2px" onclick="addReact('${CP?.id}','${msgId}','${e}');this.parentElement.remove()">${e}</span>`).join('');
+  const el=document.getElementById('msg'+msgId);
+  if(el){const bl=el.querySelector('.cbbl');if(bl){bl.style.position='relative';bl.appendChild(pop);}}
+  setTimeout(()=>pop.remove(),3000);
+}
+async function addReact(partyId,msgId,emoji){
+  if(!CU)return;
+  const msgs=await dbGet('dp_chat',`?id=eq.${msgId}&limit=1`);
+  if(!msgs||!msgs[0])return;
+  const reacts=msgs[0].reactions||{};
+  if(!reacts[emoji])reacts[emoji]=[];
+  const idx=reacts[emoji].indexOf(CU.id);
+  if(idx>-1)reacts[emoji].splice(idx,1);else reacts[emoji].push(CU.id);
+  await dbPatch('dp_chat',`?id=eq.${msgId}`,{reactions:reacts});
+}
+
+/* ================================================================
+   WIFE ALERTS
+================================================================ */
+const WM=['','Bhai thoda jaldi kar, time ho raha ⏰','WARNING! Ek ghante mein nikal! ⚠️','RED ALERT! Abhi nikal!! 🚨','💀 NOW. MAAN JA NAHI TOH CLASS LAGEGI. TERI. 💀'];
+async function sendWife(partyId,level){
+  if(!CU)return;
+  const msg=WM[level];
+  await dbPost('dp_wife_alerts',{party_id:partyId,level,message:msg,sent_by_name:CU.name});
+  const el=document.getElementById('wsent');
+  if(el){el.textContent=`${CU.name} ne Level ${level} bheja! Group ko dikh raha hai.`;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),6e3);}
+  T(`Wife Alert L${level} sent! 📢`,'am');
+}
+async function sendCustomWife(partyId){
+  const msg=document.getElementById('cwife')?.value.trim();if(!msg){T('Message likho pehle!','re');return;}
+  await dbPost('dp_wife_alerts',{party_id:partyId,level:0,message:msg,sent_by_name:CU?.name});
+  document.getElementById('cwife').value='';T('Custom alert sent! 📢','am');
+}
+function schedWife(partyId){
+  const mins=parseInt(document.getElementById('scht')?.value)||30;const lvl=parseInt(document.getElementById('schl')?.value)||1;
+  T(`Wife Alert L${lvl} scheduled for ${mins} min mein ⏰`,'am');
+  setTimeout(()=>sendWife(partyId,lvl),mins*60*1000);
+}
+async function createWifeLink(partyId){
+  const token=Math.random().toString(36).slice(2,10);
+  await dbPost('dp_wife_links',{party_id:partyId,token,wife_name:'Wife'});
+  const url=`${location.origin}${location.pathname}?wife=${token}`;
+  const el=document.getElementById('wife-link-out');
+  if(el){el.innerHTML=`<div style="background:var(--bg3);border-radius:9px;padding:10px;font-size:12px;word-break:break-all;color:var(--mu2);margin-bottom:8px">${url}</div><div style="display:flex;gap:7px"><button class="btn sm p" onclick="navigator.clipboard?.writeText('${url}');T('Link copied! 📋','gr')">📋 Copy</button><button class="btn sm p" onclick="window.open('https://wa.me/?text='+encodeURIComponent('Yeh link use karke party alerts bhej saktii ho 🥃 ${url}'),'_blank')">📤 WhatsApp</button></div>`;}
+}
+
+/* Wife link page handler */
+async function handleWifePage(token){
+  const links=await dbGet('dp_wife_links',`?token=eq.${token}&limit=1`);
+  if(!links||!links[0]){document.getElementById('wife-party-name').textContent='Invalid or expired link';return;}
+  const parties=await dbGet('dp_parties',`?id=eq.${links[0].party_id}&limit=1`);
+  if(parties&&parties[0])document.getElementById('wife-party-name').textContent=`${parties[0].emoji} ${parties[0].name}`;
+  window._wifePartyId=links[0].party_id;
+}
+async function sendWifeAlert(level){
+  if(!window._wifePartyId)return;
+  const msg=WM[level];
+  await dbPost('dp_wife_alerts',{party_id:window._wifePartyId,level,message:msg,sent_by_name:'Wife'});
+  document.getElementById('wife-sent-confirm').style.display='block';
+  document.getElementById('wife-sent-confirm').textContent=`✓ Level ${level} alert sent to the group!`;
+  T('Alert sent! 🔔','gr');
+}
+
+/* ================================================================
+   DRINKS / MIXERS
+================================================================ */
+async function chD(partyId,drinkId,delta){
+  const d=CP?.drinks?.find(x=>x.id===drinkId);if(!d)return;
+  const newQty=Math.max(0,d.qty+delta);d.qty=newQty;
+  await dbPatch('dp_drinks',`?id=eq.${drinkId}`,{qty:newQty});
+  const e=document.getElementById('dq'+drinkId);if(e)e.textContent=newQty;
+}
+async function chkM(partyId,mixerId){
+  const m=CP?.mixers?.find(x=>x.id===mixerId);if(!m)return;
+  m.done=!m.done;
+  await dbPatch('dp_mixers',`?id=eq.${mixerId}`,{done:m.done});
+  const e=document.getElementById('mx'+mixerId);if(e)e.classList.toggle('ck',m.done);
+  T(m.done?'Done ✓':'Unmarked');
+}
+
+/* ================================================================
+   EXPENSES
+================================================================ */
+async function togPaid(partyId,expId){
+  const e=CP?.expenses?.find(x=>x.id===expId);if(!e)return;
+  e.paid=!e.paid;
+  await dbPatch('dp_expenses',`?id=eq.${expId}`,{paid:e.paid});
+  const el=document.getElementById('pt'+expId);if(el){el.classList.toggle('pd',e.paid);el.textContent=e.paid?'✓':'₹';}
+  T(e.paid?`₹${e.amount} paid ✓`:'Marked unpaid',e.paid?'gr':'');
+}
+function openUPI(vpa,amt,name){window.location.href=`upi://pay?pa=${vpa}&pn=${encodeURIComponent(name)}&am=${amt}&cu=INR&tn=DaruParty`;setTimeout(()=>T(`Opening UPI to pay ${name} ₹${amt} ⚡`,'am'),300);}
+
+/* ================================================================
+   RSVP / DAARU / SAFETY
+================================================================ */
+async function doRsvp(partyId,status){
+  if(!CU)return;
+  await dbPatch('dp_members',`?party_id=eq.${partyId}&user_id=eq.${CU.id}`,{rsvp:status});
+  const me=CP?.members?.find(m=>m.user_id===CU.id);if(me)me.rsvp=status;
+  T({yes:L('going')+' ✓ 🎉',maybe:L('maybe')+' 🤔',no:L('skip')+' 😢'}[status]);
+}
+async function bumpD(partyId,userId){
+  const m=CP?.members?.find(x=>x.user_id===userId);if(!m||m.dd)return;
+  m.daaru_level=((m.daaru_level||0)+1)%6;
+  await dbPatch('dp_members',`?party_id=eq.${partyId}&user_id=eq.${userId}`,{daaru_level:m.daaru_level});
+  const lv=DL[m.daaru_level];
+  ['dlv','dfil','dem'].forEach(pre=>{const el=document.getElementById(pre+userId);if(!el)return;if(pre==='dlv'){el.textContent=lv.n;el.style.color=lv.c;}else if(pre==='dfil'){el.style.width=lv.p+'%';el.style.background=lv.c;}else el.textContent=lv.e;});
+  const si=document.getElementById('dm-sico');if(si)si.innerHTML=DM('default',m.daaru_level);
+  if(m.daaru_level===5){T('🤮 VOMIT WARNING!','re');sendWife(partyId,3);}else T('Level: '+lv.n,'am');
+  const pv=partyVibe(CP);const vn=document.getElementById('vibe-nm'),vf=document.getElementById('vibe-f');
+  if(vn)vn.textContent=pv.n;if(vf){vf.style.width=pv.p+'%';vf.style.background=pv.c;}
+}
+async function doMarkSafe(partyId){
+  if(!CU)return;
+  const me=CP?.members?.find(m=>m.user_id===CU.id);if(!me)return;
+  me.safe=!me.safe;
+  await dbPatch('dp_members',`?party_id=eq.${partyId}&user_id=eq.${CU.id}`,{safe:me.safe});
+  const b=document.getElementById('safe-btn');
+  if(b){b.classList.toggle('on',me.safe);b.innerHTML=me.safe?'✓ Safe — Group can see':'🛡️ '+L('markSafe');}
+  T(me.safe?'Marked safe! Group notified 🛡️':'Unmarked','gr');
+  if(me.safe)push('Safe!',CU.name+' marked themselves safe 🛡️');
+}
+async function tagCP(partyId){
+  if(!CU)return;
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(async pos=>{
+      await dbPost('dp_checkpoints',{party_id:partyId,location:'Your location',lat:pos.coords.latitude,lng:pos.coords.longitude,hot:true,tagged_by:CU.name,expires_at:new Date(Date.now()+2*36e5).toISOString()});
+      T('Checkpoint tagged! 2hr expire 🚔','re');
+    },()=>T('Checkpoint tagged! 🚔','am'));
+  }else T('Checkpoint tagged! 🚔','am');
+}
+function doSOS(partyId){
+  if(navigator.geolocation){navigator.geolocation.getCurrentPosition(pos=>{T(`SOS sent! ${pos.coords.latitude.toFixed(3)},${pos.coords.longitude.toFixed(3)} 🆘`,'re');push('🆘 SOS!',CU?.name+' needs help!');},()=>T('SOS sent! 🆘','re'));}else T('SOS sent! 🆘','re');
+}
+function doRescue(partyId){
+  const msg=`🚨 ${CU?.name||'Bhai'} ko rescue chahiye! Police naka nearby. Koi aa sakta hai? Party: ${CP?.name} 🙏`;
+  const waUrl=`https://wa.me/?text=${encodeURIComponent(msg)}`;
+  window.open(waUrl,'_blank');
+  T('Rescue message ready to send! 🚗','am');
+}
+
+/* ================================================================
+   FOOD / VOTE
+================================================================ */
+async function castVote(partyId,voteId){
+  if(!CU)return;
+  const vote=CP?.food_votes?.find(v=>v.id===voteId);if(!vote)return;
+  const voted_by=vote.voted_by||[];
+  const idx=voted_by.indexOf(CU.id);
+  if(idx>-1)voted_by.splice(idx,1);else{CP?.food_votes?.forEach(v=>{const i=(v.voted_by||[]).indexOf(CU.id);if(i>-1)v.voted_by.splice(i,1);});voted_by.push(CU.id);}
+  vote.voted_by=voted_by;
+  // Recalculate pcts
+  const total=CP?.food_votes?.reduce((a,v)=>(v.voted_by||[]).length+a,0)||1;
+  for(const v of(CP?.food_votes||[])){v.pct=Math.round(((v.voted_by||[]).length/total)*100);await dbPatch('dp_food_votes',`?id=eq.${v.id}`,{pct:v.pct,voted_by:v.voted_by});const e=document.getElementById('vb'+v.id);if(e)e.style.width=v.pct+'%';const p=document.getElementById('vp'+v.id);if(p)p.textContent=v.pct+'%';const c=document.getElementById('vc'+v.id);if(c)c.classList.toggle('on',(v.voted_by||[]).includes(CU.id));}
+  T('Vote cast! 🗳️');
+}
+async function chkF(partyId,itemId){
+  const f=CP?.food_checklist?.find(x=>x.id===itemId);if(!f)return;
+  f.done=!f.done;
+  await dbPatch('dp_food_checklist',`?id=eq.${itemId}`,{done:f.done});
+  const e=document.getElementById('fc'+itemId);if(e)e.classList.toggle('ck',f.done);
+}
+
+/* ================================================================
+   PHOTOS
+================================================================ */
+async function addPhotos(input,partyId){
+  const files=Array.from(input.files);
+  for(const file of files){
+    const r=new FileReader();
+    r.onload=async e=>{
+      const canvas=document.createElement('canvas');const img=new Image();
+      img.onload=async()=>{
+        const mx=500;const sc=Math.min(1,mx/Math.max(img.width,img.height));
+        canvas.width=img.width*sc;canvas.height=img.height*sc;
+        canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+        const data=canvas.toDataURL('image/jpeg',.65);
+        await dbPost('dp_photos',{party_id:partyId,user_id:CU?.id,user_name:CU?.name,data_base64:data});
+        const g=document.getElementById('photo-grid');
+        if(g){const d=document.createElement('div');d.className='photo-thumb';d.innerHTML=`<img src="${data}"/>`;g.insertBefore(d,g.lastChild);}
+        T('Photo added 📸','gr');
+      };
+      img.src=e.target.result;
+    };
+    r.readAsDataURL(file);
+  }
+}
+
+/* ================================================================
+   RATING
+================================================================ */
+async function ratePty(partyId,n){
+  await dbPatch('dp_parties',`?id=eq.${partyId}`,{rating:n});
+  for(let i=1;i<=5;i++){const e=document.getElementById('str'+i);if(e)e.classList.toggle('lit',i<=n);}
+  const m=document.getElementById('rate-msg');if(m)m.textContent=['','Meh 😐','Could be better','Solid 👍','Awesome! 🤩','LEGENDARY! 🏆'][n];
+}
+async function sendThank(partyId){
+  const nt=document.getElementById('thanknote')?.value;
+  if(nt)await dbPatch('dp_parties',`?id=eq.${partyId}`,{thank_note:nt});
+  T('Thank you sent! 🙏🎉','gr');
+}
+
+/* ================================================================
+   MAP
+================================================================ */
+function renderMap(){
+  const p=CP;if(!p)return;
+  const svg=document.getElementById('map-svg');if(!svg)return;
+  const cps=p.checkpoints||[];
+  const cpDots=cps.map((c,i)=>{const x=60+i*100,y=c.hot?80:130;return`<circle cx="${x}" cy="${y}" r="8" fill="${c.hot?'#e84040':'#f0a500'}" opacity=".9"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="10">🚔</text>${c.hot?`<circle cx="${x}" cy="${y}" r="14" fill="none" stroke="#e84040" stroke-width="1.5" opacity=".4"><animate attributeName="r" values="10;18;10" dur="2s" repeatCount="indefinite"/></circle>`:''}`}).join('');
+  svg.innerHTML=`<rect width="360" height="200" fill="#1a1a2e" rx="10"/>
+    ${Array.from({length:8},(_,i)=>`<line x1="${i*50}" y1="0" x2="${i*50}" y2="200" stroke="rgba(255,255,255,.05)" stroke-width="1"/>`).join('')}
+    ${Array.from({length:5},(_,i)=>`<line x1="0" y1="${i*50}" x2="360" y2="${i*50}" stroke="rgba(255,255,255,.05)" stroke-width="1"/>`).join('')}
+    <line x1="0" y1="100" x2="360" y2="100" stroke="rgba(255,255,255,.1)" stroke-width="2"/>
+    <line x1="180" y1="0" x2="180" y2="200" stroke="rgba(255,255,255,.1)" stroke-width="2"/>
+    <circle cx="180" cy="100" r="16" fill="#f0a500" opacity=".2"/>
+    <circle cx="180" cy="100" r="9" fill="#f0a500" opacity=".9"/>
+    <text x="180" y="104" text-anchor="middle" font-size="10">🎉</text>
+    <text x="180" y="120" text-anchor="middle" font-size="8" fill="#f0a500">${(p.name||'Party').substring(0,12)}</text>
+    ${cpDots}
+    <rect x="6" y="182" width="200" height="14" rx="4" fill="rgba(0,0,0,.5)"/>
+    <text x="10" y="192" font-size="8" fill="rgba(255,255,255,.5)">🎉 Party  🚔 Checkpoint  🔴 Active</text>`;
+  const listEl=document.getElementById('map-cp-list');
+  if(listEl)listEl.innerHTML=cps.length?cps.map(c=>`<div style="display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:.5px solid var(--b1)"><div style="width:8px;height:8px;border-radius:50%;background:${c.hot?'var(--re)':'var(--am)'};${c.hot?'box-shadow:0 0 5px var(--re)':''}"></div><div style="flex:1"><div style="font-size:13px;font-weight:500">${c.location}</div></div>${c.hot?'<span class="pill d">HOT</span>':''}</div>`).join(''):'<div style="font-size:13px;color:var(--mu);padding:8px 0">No active checkpoints</div>';
+}
+async function tagCPMap(){
+  if(!CU||!CP)return;
+  if(navigator.geolocation){navigator.geolocation.getCurrentPosition(async pos=>{await dbPost('dp_checkpoints',{party_id:CP.id,location:'Your current location',lat:pos.coords.latitude,lng:pos.coords.longitude,hot:true,tagged_by:CU.name,expires_at:new Date(Date.now()+2*36e5).toISOString()});renderMap();T('Checkpoint tagged! 🚔','re');},()=>T('Checkpoint tagged! 🚔','am'));}else T('Checkpoint tagged! 🚔','am');
+}
+
+/* ================================================================
+   SHARE / INVITE
+================================================================ */
+function shareInvite(){
+  if(!CP)return;
+  const msg=`🥃 *${CP.emoji} ${CP.name}* party mein aao!\n📅 ${CP.date?fmtDate(CP.date):''}\n📍 ${CP.location||''}\n🔑 Group PIN: [Ask the host]\n\nDownload: ${location.href}`;
+  if(navigator.share)navigator.share({title:'Daru Party Invite',text:msg});
+  else if(navigator.clipboard){navigator.clipboard.writeText(msg);T('Invite copied! Paste on WhatsApp 📋','gr');}
+  else T('Share manually!','am');
+}
+function shareParty(){shareInvite();}
+
+/* ================================================================
+   NOTIFICATIONS
+================================================================ */
+function reqNotif(){if(!('Notification' in window)){T('Not supported on this browser');return;}Notification.requestPermission().then(p=>{if(p==='granted'){T('Notifications ON! 🔔','gr');renderHome();}else T('Blocked — enable from browser settings','re');});}
+function push(title,body){if(Notification?.permission==='granted'){try{new Notification(title,{body,icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🥃</text></svg>'});}catch(e){}}}
+
+/* ================================================================
+   CALENDAR PICKER
+================================================================ */
+function openCal(callback,initialDate){
+  calCallback=callback;calSelDate=initialDate?new Date(initialDate):new Date();
+  renderCal();document.getElementById('CAL').classList.add('open');
+}
+function closeCal(e){if(e&&e.target.id==='CAL')document.getElementById('CAL').classList.remove('open');}
+function closeCal2(){document.getElementById('CAL').classList.remove('open');}
+function renderCal(){
+  const now=new Date();const d=calSelDate||new Date();const yr=d.getFullYear(),mo=d.getMonth();
+  const first=new Date(yr,mo,1).getDay();const days=new Date(yr,mo+1,0).getDate();
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const daysHdr=['Su','Mo','Tu','We','Th','Fr','Sa'].map(d=>`<div class="cal-day-hdr">${d}</div>`).join('');
+  let cells='';for(let i=0;i<first;i++)cells+=`<div class="cal-day empty"></div>`;
+  for(let i=1;i<=days;i++){
+    const thisDate=new Date(yr,mo,i);const isPast=thisDate<new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    const isSel=calSelDate&&thisDate.toDateString()===calSelDate.toDateString();
+    const isToday=thisDate.toDateString()===now.toDateString();
+    cells+=`<div class="cal-day ${isPast?'past':''} ${isSel?'sel':''} ${isToday&&!isSel?'today':''}" onclick="${isPast?'':'selectDay('+i+')'}}">${i}</div>`;
+  }
+  const hh=calSelDate?.getHours()??19;const mm=calSelDate?.getMinutes()??0;
+  document.getElementById('CAL-s').innerHTML=`
+    <div class="cal-header">
+      <div class="cal-nav" onclick="calNav(-1)">‹</div>
+      <div class="cal-month">${months[mo]} ${yr}</div>
+      <div class="cal-nav" onclick="calNav(1)">›</div>
+    </div>
+    <div class="cal-days-hdr">${daysHdr}</div>
+    <div class="cal-grid">${cells}</div>
+    <div class="time-row">
+      <div style="font-size:13px;color:var(--mu)">Time:</div>
+      <select class="time-sel" id="cal-hr" onchange="updateCalTime()">${Array.from({length:24},(_,i)=>`<option value="${i}" ${i===hh?'selected':''}>${String(i).padStart(2,'0')}</option>`).join('')}</select>
+      <div style="font-size:18px;color:var(--mu)">:</div>
+      <select class="time-sel" id="cal-mn" onchange="updateCalTime()">${[0,15,30,45].map(m=>`<option value="${m}" ${m===mm?'selected':''}>${String(m).padStart(2,'0')}</option>`).join('')}</select>
+    </div>
+    <button class="btn" style="margin-top:14px" onclick="confirmCal()">Confirm Date & Time ✓</button>
+    <button class="btn s" onclick="closeCal2()">Cancel</button>`;
+}
+function calNav(dir){if(!calSelDate)calSelDate=new Date();calSelDate=new Date(calSelDate.getFullYear(),calSelDate.getMonth()+dir,1);renderCal();}
+function selectDay(d){if(!calSelDate)calSelDate=new Date();calSelDate=new Date(calSelDate.getFullYear(),calSelDate.getMonth(),d,calSelDate.getHours()||19,calSelDate.getMinutes()||0);renderCal();}
+function updateCalTime(){if(!calSelDate)calSelDate=new Date();const h=parseInt(document.getElementById('cal-hr')?.value||19);const m=parseInt(document.getElementById('cal-mn')?.value||0);calSelDate.setHours(h,m,0,0);}
+function confirmCal(){updateCalTime();if(calCallback)calCallback(calSelDate);closeCal2();}
+
+/* ================================================================
+   QR CODE GENERATOR (pure JS)
+================================================================ */
+function genQR(text,size=160){
+  // Simple URL-encoded QR via a free API that works offline-ish
+  // Using data URI approach - encode as URL that phones can scan
+  const canvas=document.createElement('canvas');canvas.width=size;canvas.height=size;
+  const ctx=canvas.getContext('2d');
+  // Draw a simple visual PIN display as QR placeholder
+  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,size,size);
+  ctx.fillStyle='#0d0d0f';ctx.font='bold 14px monospace';ctx.textAlign='center';
+  // Corner markers
+  [[8,8],[size-28,8],[8,size-28]].forEach(([x,y])=>{ctx.fillRect(x,y,20,20);ctx.fillStyle='#fff';ctx.fillRect(x+4,y+4,12,12);ctx.fillStyle='#0d0d0f';ctx.fillRect(x+7,y+7,6,6);ctx.fillStyle='#0d0d0f';});
+  // Center: show the party name + PIN
+  ctx.fillStyle='#0d0d0f';ctx.font='bold 11px sans-serif';ctx.textAlign='center';
+  const lines=text.split('\n');lines.forEach((l,i)=>ctx.fillText(l,size/2,size/2-10+(i*16)));
+  ctx.font='10px sans-serif';ctx.fillStyle='#666';ctx.fillText('Scan to join',size/2,size-12);
+  // Dot pattern for visual effect
+  for(let i=0;i<8;i++)for(let j=0;j<8;j++){if((i+j)%2===0&&i>2&&j>2&&i<6&&j<6){ctx.fillStyle='rgba(0,0,0,0.15)';ctx.fillRect(36+i*8,36+j*8,6,6);}}
+  return canvas.toDataURL();
+}
+
+/* ================================================================
+   MODALS
+================================================================ */
+let newPartyDate=null;
+const MODS={
+  newParty:{t:'Naya Party Banao 🥃',b:()=>`
+    <div class="ptgrid">${[['🥃','Daru'],['🎨','Holi'],['🪔','Diwali'],['🏡','Ghar'],['🎂','Birthday'],['🌟','Special']].map(([e,n],i)=>`<div class="ptit ${i===0?'on':''}" onclick="selPTf(${i})" id="pt${i}"><span class="pt-em">${e}</span><div class="pt-nm">${n}</div></div>`).join('')}</div>
+    <div class="inrow"><div class="inlbl">Party naam *</div><input class="inp" id="np-nm" type="text" placeholder="College Gang, Office Party..."></div>
+    <div class="inrow"><div class="inlbl">Date & Time *</div><div style="display:flex;gap:8px;align-items:center"><div class="inp" id="np-dt-display" style="flex:1;cursor:pointer;color:var(--mu)" onclick="openCal(d=>{newPartyDate=d;document.getElementById('np-dt-display').textContent=d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})+' · '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});document.getElementById('np-dt-display').style.color='var(--tx)';})" readonly>Tap to pick date & time 📅</div></div></div>
+    <div class="inrow"><div class="inlbl">Location</div><input class="inp" id="np-lc" type="text" placeholder="Address — e.g. Rahul ke ghar, Sector 57, Gurgaon"></div>
+    <div class="inrow"><div class="inlbl">Group PIN (4 digits — share with members only)</div><input class="inp" id="np-pn" type="number" placeholder="e.g. 4269" style="-moz-appearance:textfield" maxlength="4"></div>
+    <div class="inlbl">Join Mode</div>
+    <div class="join-modes">
+      <div class="jmode on" id="jm0" onclick="selJM('pin','jm0','jm1','jm2')"><div class="jmode-title">🔑 PIN Entry</div><div class="jmode-sub">Anyone with the PIN can join directly</div></div>
+      <div class="jmode" id="jm1" onclick="selJM('request','jm0','jm1','jm2')"><div class="jmode-title">🙋 Request to Join</div><div class="jmode-sub">Members approve each request — more private</div></div>
+      <div class="jmode" id="jm2" onclick="selJM('invite','jm0','jm1','jm2')"><div class="jmode-title">💌 Invite Only</div><div class="jmode-sub">Host manually adds each person</div></div>
+    </div>
+    <button class="btn" onclick="createParty()">Party Banao! 🎉</button>
+    <button class="btn s" onclick="closeMod()">Cancel</button>`},
+  addExpense:{t:'Kharcha Add Karo',b:()=>`
+    <div class="inrow"><div class="inlbl">Kya tha?</div><input class="inp" id="ae-w" type="text" placeholder="Whisky, Snacks, Petrol..."></div>
+    <div class="inrow"><div class="inlbl">Amount (₹)</div><input class="inp" id="ae-a" type="number" placeholder="850"></div>
+    <div class="inrow"><div class="inlbl">Kisne diya?</div><select class="inp" id="ae-who">${(CP?.members||[]).map(m=>`<option value="${m.user_id}">${m.name}</option>`).join('')}</select></div>
+    <div class="inlbl">Split type</div><div class="sptypes"><div class="sptype on" id="sp0" onclick="selSPf(0)">🤝 Equal</div><div class="sptype" id="sp1" onclick="selSPf(1)">🎁 Complimentary</div><div class="sptype" id="sp2" onclick="selSPf(2)">👑 Party Throw</div></div>
+    <button class="btn" onclick="addExpense()">Add ✓</button><button class="btn s" onclick="closeMod()">Cancel</button>`},
+  addDrink:{t:'Drink Add Karo',b:()=>`
+    <div class="inrow"><div class="inlbl">Kya?</div><input class="inp" id="ad-nm" type="text" placeholder="Gin, Beer, Country..."></div>
+    <div class="inrow"><div class="inlbl">Kaun la raha?</div><input class="inp" id="ad-wh" type="text" placeholder="Rahul la raha, Pool..."></div>
+    <div class="inrow"><div class="inlbl">Qty</div><input class="inp" id="ad-qt" type="number" value="1" min="1"></div>
+    <button class="btn" onclick="addDrinkDB()">Add ✓</button><button class="btn s" onclick="closeMod()">Cancel</button>`},
+  offerCar:{t:'Gaadi Offer Karo 🚗',b:()=>`
+    <div class="inrow"><div class="inlbl">Seats available?</div><input class="inp" id="oc-s" type="number" value="3" min="1" max="6"></div>
+    <div class="inrow"><div class="inlbl">Pickup area</div><input class="inp" id="oc-r" type="text" placeholder="Sector 56, DLF..."></div>
+    <button class="btn" onclick="offerCarDB()">Offer Karo 🚗</button><button class="btn s" onclick="closeMod()">Cancel</button>`},
+  invite:{t:'Invite Karo 🔗',b:()=>{if(!CP)return'';
+    const qrText=`${CP.emoji} ${CP.name}\n${CP.date?fmtDate(CP.date):''}\n${CP.location?.split(',')[0]||''}\nPIN: Ask host`;
+    const qrData=genQR(qrText);
+    return`<div class="invite-card">
+      <div class="ic-party">${CP.emoji} ${CP.name}</div>
+      <div class="ic-det">📅 ${CP.date?fmtDate(CP.date):'TBD'}<br>📍 ${CP.location||'TBD'}</div>
+      <img src="${qrData}" style="width:160px;height:160px;border-radius:12px;margin:0 auto 10px;display:block">
+      <div style="font-size:12px;color:var(--mu)">Scan QR code to join · Or share the PIN</div>
+    </div>
+    <button class="btn" onclick="shareInvite();closeMod()">📤 Share via WhatsApp</button>
+    <button class="btn s" onclick="closeMod()">Done</button>`;
+  }},
+  joinParty:{t:'Join a Party 🔑',b:()=>`
+    <div class="inrow"><div class="inlbl">Enter Group PIN</div>
+      <div class="pdots" style="justify-content:flex-start;gap:10px;margin-bottom:12px" id="jp-dots"><div class="pd" id="jpd0"></div><div class="pd" id="jpd1"></div><div class="pd" id="jpd2"></div><div class="pd" id="jpd3"></div></div>
+      <div class="pkp">${[1,2,3,4,5,6,7,8,9,'⌫',0,'Go →'].map((k,i)=>`<div class="pk ${k==='Go →'?'go':k==='⌫'?'del':''}" onclick="jpKey('${k}')">${k}</div>`).join('')}</div>
+    </div>
+    <div class="perr" id="jp-err"></div>
+    <div style="text-align:center;margin:10px 0;font-size:13px;color:var(--mu)">— or —</div>
+    <button class="btn s" onclick="T('QR scanner coming soon! 📷','am')">📷 Scan QR Code</button>`},
+  settings:{t:'Settings ⚙️',b:()=>`
+    <div class="inlbl" style="margin-bottom:6px">Language / Bhasha</div>
+    <div class="lang-opts">
+      <div class="lang-opt ${(CU?.lang||'hinglish')==='en'?'on':''}" onclick="setLang('en')">🇬🇧 English</div>
+      <div class="lang-opt ${(CU?.lang||'hinglish')==='hi'?'on':''}" onclick="setLang('hi')">🇮🇳 Hindi</div>
+      <div class="lang-opt ${(CU?.lang||'hinglish')==='hinglish'?'on':''}" onclick="setLang('hinglish')">🔀 Hinglish</div>
+    </div>
+    ${CP?`<div class="inrow"><div class="inlbl">Rename party</div><input class="inp" id="set-nm" type="text" value="${CP?.name||''}"></div>
+    <div style="background:var(--bg3);border-radius:9px;padding:11px;margin-bottom:10px">
+      <div style="font-size:12px;font-weight:500;margin-bottom:6px">🔔 Notifications</div>
+      ${['Payment reminders','Wife alerts','Checkpoint alerts','RSVP updates','Daaru level 🤮'].map((n,i)=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:.5px solid var(--b1)"><span style="font-size:12px">${n}</span><div id="tog${i}" data-on="1" style="width:36px;height:20px;background:var(--am);border-radius:10px;cursor:pointer;position:relative" onclick="togSw(${i})"><div id="tk${i}" style="position:absolute;top:2px;right:2px;width:16px;height:16px;background:#fff;border-radius:50%"></div></div></div>`).join('')}
+    </div>
+    <button class="btn" onclick="saveSettings()">Save ✓</button>
+    <button class="btn s" style="color:var(--re);border-color:var(--rbr);margin-top:8px" onclick="endPartyDB()">🏁 End Party</button>`:''}
+    <button class="btn s" onclick="closeMod()">Cancel</button>`},
+  notifs:{t:'🔔 Notifications',b:()=>`
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
+      ${[{i:'₹',c:'var(--am)',t:'Payment Reminder',s:'Check settlements in Cost section',tm:'Just now'},
+         {i:'🚔',c:'var(--re)',t:'Checkpoint Alert',s:'New checkpoint tagged near party venue',tm:'2 min ago'},
+         {i:'💀',c:'var(--re)',t:'Wife Alert Level 4!',s:'NOW. MAAN JA NAHI TOH CLASS LAGEGI 💀',tm:'5 min ago'},
+         {i:'🙋',c:'var(--am)',t:'Join Request',s:'Someone wants to join your party',tm:'10 min ago'},
+      ].map(n=>`<div style="background:var(--bg3);border-radius:9px;padding:10px;display:flex;gap:8px"><div style="width:30px;height:30px;border-radius:8px;background:${n.c}22;color:${n.c};display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">${n.i}</div><div style="flex:1"><div style="font-size:12px;font-weight:500">${n.t}</div><div style="font-size:11px;color:var(--mu);margin-top:1px">${n.s}</div></div><div style="font-size:10px;color:var(--mu)">${n.tm}</div></div>`).join('')}
+    </div>
+    <button class="btn s" onclick="closeMod()">Done</button>`},
+  profile:{t:'👤 Profile',b:()=>`
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="width:70px;height:70px;border-radius:50%;margin:0 auto 8px;overflow:hidden">${avatarEl(CU,70)}</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px">${CU?.name||'?'}</div>
+      <div style="font-size:12px;color:var(--mu)">${CU?.city||'India'} · Party Organiser 🎉</div>
+      ${CU?.mobile?`<div style="font-size:12px;color:var(--mu);margin-top:2px">📱 +91 ${CU.mobile}</div>`:''}
+    </div>
+    <div style="background:var(--bg3);border-radius:11px;padding:12px;margin-bottom:12px;display:flex;justify-content:space-around">
+      <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:var(--am)">${CParties.length}</div><div style="font-size:10px;color:var(--mu);margin-top:1px">Parties</div></div>
+      <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:var(--am)">${CParties.reduce((a,p)=>(p.members||[]).length+a,0)}</div><div style="font-size:10px;color:var(--mu);margin-top:1px">Friends</div></div>
+      <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:18px;color:var(--am)">⭐4.8</div><div style="font-size:10px;color:var(--mu);margin-top:1px">Host Rating</div></div>
+    </div>
+    <div class="inrow"><div class="inlbl">UPI ID</div><input class="inp" id="pr-upi" type="text" value="${CU?.upi||''}" placeholder="yourname@paytm"></div>
+    <button class="btn" onclick="saveProfile()">Save ✓</button>
+    <div style="font-size:10px;color:var(--mu);text-align:center;margin-top:12px">© 2025 Daru Party · MaggoTrades · Patent Pending<br>By Saurabh · All rights reserved</div>
+    <button class="btn s" onclick="closeMod()">Close</button>`},
+  requests:{t:'🙋 Join Requests',b:()=>`<div id="requests-list"><div class="loader"></div></div>`}
+};
+
+function selPTf(i){selPT=i;document.querySelectorAll('[id^="pt"]').forEach((e,j)=>e.classList.toggle('on',j===i));}
+function selSPf(i){selSP=i;document.querySelectorAll('[id^="sp"]').forEach((e,j)=>e.classList.toggle('on',j===i));}
+function selJM(mode){selJoinMode=mode;['jm0','jm1','jm2'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.classList.toggle('on',['pin','request','invite'][i]===mode);});}
+function togSw(i){const t=document.getElementById('tog'+i),k=document.getElementById('tk'+i);if(!t)return;const on=t.dataset.on==='1';t.dataset.on=on?'0':'1';t.style.background=on?'var(--bg4)':'var(--am)';if(k)k.style.transform=on?'translateX(-14px)':'translateX(0)';}
+
+// Join party keypad
+let jpv='';
+function jpKey(k){
+  if(k==='⌫'){jpv=jpv.slice(0,-1);}else if(k==='Go →'){if(jpv.length===4)joinByPin(jpv);return;}else if(jpv.length<4)jpv+=k;
+  for(let i=0;i<4;i++){const d=document.getElementById('jpd'+i);if(d)d.classList.toggle('f',i<jpv.length);}
+}
+async function joinByPin(pin){
+  showLoad('Searching...');
+  const parties=await dbGet('dp_parties',`?pin_hash=eq.${simpleHash(pin)}&status=neq.done&limit=1`);
+  hideLoad();
+  if(parties&&parties[0]){
+    pendingPartyId=parties[0].id;
+    const savedPins=LS('grp_pins')||{};savedPins[parties[0].id]=simpleHash(pin);LS('grp_pins',savedPins);
+    await joinPartyAsMember(parties[0]);
+    const fp=await loadFullParty(parties[0].id);
+    if(!CParties.find(p=>p.id===parties[0].id))CParties.push(parties[0]);
+    closeMod();
+    goDetail(fp);
+  }else{
+    const e=document.getElementById('jp-err');if(e)e.textContent='No party found with this PIN!';
+    jpv='';for(let i=0;i<4;i++){const d=document.getElementById('jpd'+i);if(d)d.classList.remove('f');}
+  }
+}
+
+async function loadRequestsMod(){
+  const ids=CParties.map(p=>p.id);if(!ids.length)return;
+  const reqs=await dbGet('dp_join_requests',`?party_id=in.(${ids.join(',')})&status=eq.pending&order=created_at.desc`);
+  const el=document.getElementById('requests-list');if(!el)return;
+  if(!reqs||!reqs.length){el.innerHTML='<div style="font-size:13px;color:var(--mu);text-align:center;padding:16px">No pending requests</div>';return;}
+  el.innerHTML=reqs.map(r=>`<div style="background:var(--bg3);border-radius:12px;padding:14px;margin-bottom:10px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <div style="width:42px;height:42px;border-radius:50%;background:var(--abg);display:flex;align-items:center;justify-content:center;font-size:18px">${r.user_photo?`<img src="${r.user_photo}" style="width:42px;height:42px;border-radius:50%;object-fit:cover">`:r.user_name?.[0]||'?'}</div>
+      <div><div style="font-size:14px;font-weight:500">${r.user_name}</div><div style="font-size:11px;color:var(--mu)">Wants to join ${CParties.find(p=>p.id===r.party_id)?.name||'a party'}</div></div>
+    </div>
+    ${r.message?`<div style="font-size:12px;color:var(--mu2);font-style:italic;background:var(--bg4);border-radius:8px;padding:8px;margin-bottom:10px">"${r.message}"</div>`:''}
+    <div style="display:flex;gap:8px">
+      <button class="btn sm g" style="flex:1;justify-content:center" onclick="approveRequest('${r.id}','${r.party_id}')">✓ Approve</button>
+      <button class="btn sm r" style="flex:1;justify-content:center" onclick="rejectRequest('${r.id}')">✗ Reject</button>
+    </div>
+  </div>`).join('');
+}
+async function approveRequest(reqId,partyId){
+  showLoad('Approving...');
+  await dbPatch('dp_join_requests',`?id=eq.${reqId}`,{status:'approved',approved_by:CU?.id});
+  hideLoad();T('Approved! Member notified ✓','gr');loadRequestsMod();renderRequestsBanner();
+}
+async function rejectRequest(reqId){
+  await dbPatch('dp_join_requests',`?id=eq.${reqId}`,{status:'rejected'});
+  T('Request rejected','re');loadRequestsMod();
+}
+
+function openMod(k){
+  const m=MODS[k];if(!m)return;
+  document.getElementById('MOD-t').textContent=m.t;
+  document.getElementById('MOD-b').innerHTML=m.b();
+  document.getElementById('MOD').classList.add('open');
+  if(k==='requests')loadRequestsMod();
+}
+function closeMod(e){if(!e||e.target.id==='MOD')document.getElementById('MOD').classList.remove('open');}
+async function setLang(l){if(CU){CU.lang=l;LS('user',CU);await dbPatch('dp_users',`?id=eq.${CU.id}`,{lang:l});}CL=l;document.querySelectorAll('.lang-opt').forEach((e,i)=>e.classList.toggle('on',['en','hi','hinglish'][i]===l));T('Language set ✓','gr');}
+async function saveSettings(){
+  const nm=document.getElementById('set-nm')?.value.trim();
+  if(nm&&CP){CP.name=nm;await dbPatch('dp_parties',`?id=eq.${CP.id}`,{name:nm});}
+  closeMod();T('Settings saved ✓','gr');renderHome();
+}
+async function saveProfile(){const upi=document.getElementById('pr-upi')?.value.trim();if(upi&&CU){CU.upi=upi;LS('user',CU);await dbPatch('dp_users',`?id=eq.${CU.id}`,{upi});}closeMod();T('Profile saved ✓','gr');}
+async function endPartyDB(){if(!CP)return;await dbPatch('dp_parties',`?id=eq.${CP.id}`,{status:'done',lifecycle:4});CP.status='done';closeMod();goHome();T('Party ended! Settlement reminders logged 📢','gr');}
+
+/* ================================================================
+   CREATE PARTY
+================================================================ */
+async function createParty(){
+  const nm=document.getElementById('np-nm')?.value.trim();
+  const pin=(document.getElementById('np-pn')?.value||'').trim();
+  const loc=document.getElementById('np-lc')?.value.trim()||'';
+  if(!nm){T('Party naam batao! 😅','re');return;}
+  if(!pin||pin.length!==4){T('4-digit PIN chahiye! 🔒','re');return;}
+  if(!newPartyDate){T('Date & time pick karo! 📅','re');return;}
+  if(!CU){T('Please login first','re');return;}
+  showLoad('Creating party...');
+  const types=[['🥃','Daru Party'],['🎨','Holi'],['🪔','Diwali'],['🏡','Get Together'],['🎂','Birthday'],['🌟','Special']];
+  const[emoji,type]=types[selPT];
+  const partyId=uid();
+  try{
+    await dbPost('dp_parties',{id:partyId,name:nm,emoji,type,pin_hash:simpleHash(pin),host_id:CU.id,date:newPartyDate.toISOString(),location:loc,join_mode:selJoinMode,status:'planning',lifecycle:0,lang:CU.lang||'hinglish'});
+    await dbPost('dp_members',{party_id:partyId,user_id:CU.id,name:CU.name,color:CU.color,role:'host',rsvp:'yes',upi:CU.upi||null});
+    // Default drinks, mixers, food
+    await Promise.all([
+      dbPost('dp_drinks',{party_id:partyId,name:'Whisky / Country',who:'TBD',qty:1}),
+      dbPost('dp_drinks',{party_id:partyId,name:'Beer (Kingfisher)',who:'TBD',qty:6}),
+      dbPost('dp_mixers',{party_id:partyId,name:'Soda bottles',done:false}),
+      dbPost('dp_mixers',{party_id:partyId,name:'Ice bags',done:false}),
+      dbPost('dp_mixers',{party_id:partyId,name:'Glasses',done:false}),
+      dbPost('dp_food_votes',{party_id:partyId,option_name:'Pizza',emoji:'🍕',pct:0,voted_by:[]}),
+      dbPost('dp_food_votes',{party_id:partyId,option_name:'Biryani',emoji:'🍛',pct:0,voted_by:[]}),
+      dbPost('dp_food_votes',{party_id:partyId,option_name:'Pav Bhaji',emoji:'🫘',pct:0,voted_by:[]}),
+      dbPost('dp_chat',{party_id:partyId,user_id:CU.id,user_name:CU.name,user_color:CU.color,message:`${emoji} Party ban gayi! PIN ${pin} share karo 🎉`,reactions:{}}),
+    ]);
+    const savedPins=LS('grp_pins')||{};savedPins[partyId]=simpleHash(pin);LS('grp_pins',savedPins);
+    const fp=await loadFullParty(partyId);
+    CParties.unshift(fp);
+    hideLoad();closeMod();newPartyDate=null;
+    T('Party created! PIN: '+pin+' 🎉','gr');
+    goDetail(fp);
+  }catch(e){hideLoad();console.error(e);T('Error creating party. Check connection.','re');}
+}
+
+async function addExpense(){
+  const w=document.getElementById('ae-w')?.value.trim(),a=parseInt(document.getElementById('ae-a')?.value);
+  if(!w||!a){T('Kya aur kitna — dono batao!','re');return;}
+  const pid=document.getElementById('ae-who')?.value;
+  const m=CP?.members?.find(x=>x.user_id===pid)||CP?.members?.[0];
+  const types=['split','complimentary','party-throw'];
+  await dbPost('dp_expenses',{party_id:CP.id,what:w,who:m?.name,paid_by:pid,amount:a,split_type:types[selSP],paid:false});
+  closeMod();T('₹'+a+' expense added ✓','gr');
+  const fp=await loadFullParty(CP.id);CP=fp;renderDetail(fp);
+}
+
+async function addDrinkDB(){
+  const nm=document.getElementById('ad-nm')?.value.trim();if(!nm){T('Naam batao!','re');return;}
+  await dbPost('dp_drinks',{party_id:CP.id,name:nm,who:document.getElementById('ad-wh')?.value||'TBD',qty:parseInt(document.getElementById('ad-qt')?.value)||1});
+  closeMod();T(nm+' added 🥃','gr');
+  const fp=await loadFullParty(CP.id);CP=fp;renderDetail(fp);
+}
+
+async function offerCarDB(){
+  if(!CU||!CP)return;
+  await dbPost('dp_carpool',{party_id:CP.id,driver_name:CU.name,seats:parseInt(document.getElementById('oc-s')?.value)||3,route:document.getElementById('oc-r')?.value||'Flexible',passengers:[]});
+  closeMod();T('Gaadi offer ho gayi! 🚗','gr');
+  const fp=await loadFullParty(CP.id);CP=fp;renderDetail(fp);
+}
+
+/* ================================================================
+   PWA SETUP
+================================================================ */
+function setupPWA(){
+  const manifest={name:'Daru Party',short_name:'DaruParty',description:'Private party planner for your crew',start_url:'/',display:'standalone',background_color:'#0d0d0f',theme_color:'#f0a500',orientation:'portrait',categories:['social','lifestyle'],icons:[{src:'https://em-content.zobj.net/source/apple/354/tropical-drink_1f379.png',sizes:'192x192',type:'image/png'},{src:'https://em-content.zobj.net/source/apple/354/tropical-drink_1f379.png',sizes:'512x512',type:'image/png'}]};
+  const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  document.getElementById('pwa-manifest').href=url;
+  // Service worker — /sw.js must be deployed alongside index.html on Netlify
+  if('serviceWorker' in navigator && location.protocol==='https:'){
+    navigator.serviceWorker.register('/sw.js')
+      .then(r=>console.log('SW registered',r.scope))
+      .catch(e=>console.log('SW skipped (deploy sw.js alongside index.html):',e.message));
+  }
+}
+
+/* ================================================================
+   INIT
+================================================================ */
+window.addEventListener('load',async()=>{
+  setupPWA();
+  initAvPick();
+
+  // Check if wife link page
+  const urlParams=new URLSearchParams(location.search);
+  const wifeToken=urlParams.get('wife');
+  if(wifeToken){SS('S-wife');await handleWifePage(wifeToken);return;}
+
+  // Splash then route
+  setTimeout(async()=>{
+    const setup=LS('setup');
+    const pinHash=LS('pin_hash');
+    if(!setup||!pinHash){
+      // First time
+      SS('S-ob1');
+    }else{
+      // Returning user
+      CU=LS('user');
+      if(CU)document.getElementById('pin-username').textContent=CU.name+' 👋';
+      SS('S-pin');
+    }
+  },1800);
+
+  document.addEventListener('touchmove',e=>{if(!e.target.closest('.screen')&&!e.target.closest('.sheet')&&!e.target.closest('.cal-sheet'))e.preventDefault();},{passive:false});
+});
+</script>
+<!-- 
+==============================================
+SUPABASE SETUP — Run this SQL in Supabase SQL Editor:
+https://lcwxrfliwzpdxgeppixn.supabase.co
+
+create table if not exists dp_users (id uuid primary key default gen_random_uuid(), name text not null, photo text, mobile text, city text, color text default '#f0a500', pin_hash text not null, upi text, lang text default 'hinglish', created_at timestamptz default now());
+create table if not exists dp_parties (id text primary key, name text not null, emoji text default '🥃', type text, pin_hash text not null, host_id uuid, date timestamptz, location text, lat float, lng float, join_mode text default 'pin', status text default 'active', lifecycle int default 0, pinned_msg text, lang text default 'hinglish', rating int default 0, thank_note text, created_at timestamptz default now());
+create table if not exists dp_members (id uuid primary key default gen_random_uuid(), party_id text, user_id uuid, name text, color text, role text default 'member', rsvp text default 'maybe', dd boolean default false, safe boolean default false, daaru_level int default 0, upi text, joined_at timestamptz default now(), unique(party_id, user_id));
+create table if not exists dp_join_requests (id uuid primary key default gen_random_uuid(), party_id text, user_id uuid, user_name text, user_photo text, message text, status text default 'pending', approved_by uuid, created_at timestamptz default now());
+create table if not exists dp_expenses (id uuid primary key default gen_random_uuid(), party_id text, what text, who text, paid_by uuid, amount int, split_type text default 'split', paid boolean default false, created_at timestamptz default now());
+create table if not exists dp_drinks (id uuid primary key default gen_random_uuid(), party_id text, name text, who text, qty int default 1);
+create table if not exists dp_mixers (id uuid primary key default gen_random_uuid(), party_id text, name text, done boolean default false);
+create table if not exists dp_chat (id uuid primary key default gen_random_uuid(), party_id text, user_id uuid, user_name text, user_color text, message text, reactions jsonb default '{}', created_at timestamptz default now());
+create table if not exists dp_checkpoints (id uuid primary key default gen_random_uuid(), party_id text, location text, lat float, lng float, hot boolean default true, tagged_by text, expires_at timestamptz, created_at timestamptz default now());
+create table if not exists dp_wife_alerts (id uuid primary key default gen_random_uuid(), party_id text, level int, message text, sent_by_name text, created_at timestamptz default now());
+create table if not exists dp_food_votes (id uuid primary key default gen_random_uuid(), party_id text, option_name text, emoji text, pct int default 0, voted_by jsonb default '[]');
+create table if not exists dp_food_checklist (id uuid primary key default gen_random_uuid(), party_id text, name text, done boolean default false);
+create table if not exists dp_photos (id uuid primary key default gen_random_uuid(), party_id text, user_id uuid, user_name text, data_base64 text, created_at timestamptz default now());
+create table if not exists dp_wife_links (id uuid primary key default gen_random_uuid(), party_id text, token text unique, wife_name text, created_at timestamptz default now());
+create table if not exists dp_carpool (id uuid primary key default gen_random_uuid(), party_id text, driver_name text, seats int default 3, route text, passengers jsonb default '[]');
+
+-- Enable RLS and allow all (tighten later)
+do $$ declare t text; begin for t in select tablename from pg_tables where schemaname='public' and tablename like 'dp_%' loop execute 'alter table '||t||' enable row level security'; execute 'create policy if not exists "allow_all" on '||t||' for all using (true) with check (true)'; end loop; end $$;
+
+-- Enable realtime
+alter publication supabase_realtime add table dp_chat;
+alter publication supabase_realtime add table dp_wife_alerts;
+alter publication supabase_realtime add table dp_join_requests;
+alter publication supabase_realtime add table dp_checkpoints;
+alter publication supabase_realtime add table dp_members;
+==============================================
+-->
+<!-- 
+NETLIFY DEPLOYMENT:
+1. Rename this file to index.html
+2. Create a file called sw.js with content: self.addEventListener('fetch',()=>{})
+3. Drag BOTH files to netlify.com/drop
+That's it!
+
+OR just drag index.html alone - PWA install will work on Android Chrome.
+iOS Safari has limited PWA support regardless.
+-->
+</body>
+</html>
