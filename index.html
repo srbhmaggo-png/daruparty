@@ -1064,10 +1064,17 @@ async function loadUserParties(){
         dbGet('dp_members',`?party_id=eq.${party.id}`),
         dbGet('dp_expenses',`?party_id=eq.${party.id}`)
       ]);
-      return {...party, members:members||[], expenses:expenses||[]};
+      return {
+        id:party.id, name:party.name||'Party', emoji:party.emoji||'🥃',
+        type:party.type||'Daru Party', status:party.status||'active',
+        lifecycle:party.lifecycle||0, date:party.date, location:party.location,
+        pin_hash:party.pin_hash, host_id:party.host_id, lang:party.lang||'hinglish',
+        join_mode:party.join_mode||'pin', rating:party.rating||0,
+        members:members||[], expenses:expenses||[]
+      };
     }));
     CParties=enriched;
-    LS('parties',enriched.map(p=>({...p,photos:[]}))); // cache without photos (too large)
+    LS('parties',enriched); 
     hideLoad();
   }catch(e){
     // Network failed - use cached data silently
@@ -1106,6 +1113,8 @@ async function loadFullParty(id){
 function renderHome(){
   if(!CU)return;
   CL=CU.lang||'hinglish';
+  // Use cached parties if CParties is empty
+  if(!CParties.length){const cached=LS('parties');if(cached&&cached.length)CParties=cached;}
   document.getElementById('h-greet').textContent=`Hey ${CU.name} 👋`;
   // Avatar in topbar
   const hav=document.getElementById('home-av');
@@ -1990,10 +1999,15 @@ async function createParty(){
     ]);
     const savedPins=LS('grp_pins')||{};savedPins[partyId]=simpleHash(pin);LS('grp_pins',savedPins);
     const fp=await loadFullParty(partyId);
-    CParties.unshift(fp);
+    if(fp){
+      // Update CParties - replace if exists or add
+      const idx=CParties.findIndex(p=>p.id===partyId);
+      if(idx>-1)CParties[idx]=fp;else CParties.unshift(fp);
+      LS('parties',CParties.map(p=>({...p,photos:[]})));
+    }
     hideLoad();closeMod();newPartyDate=null;
     T('Party created! PIN: '+pin+' 🎉','gr');
-    goDetail(fp);
+    if(fp)goDetail(fp);else{renderHome();SS('S-home');}
   }catch(e){hideLoad();console.error(e);T('Error creating party. Check connection.','re');}
 }
 
