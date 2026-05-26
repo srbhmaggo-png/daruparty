@@ -808,7 +808,7 @@ function DM(type,lvl=0,col='#f0a500'){
    HELPERS
 ================================================================ */
 function simpleHash(s){let h=0;for(let i=0;i<s.length;i++)h=(Math.imul(31,h)+s.charCodeAt(i))|0;return Math.abs(h).toString(16);}
-function uid(){return 'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function uid(){return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));}
 function getCD(d){const diff=new Date(d)-new Date();if(diff<=0)return{d:0,h:0,m:0,s:0};return{d:Math.floor(diff/864e5),h:Math.floor(diff%864e5/36e5),m:Math.floor(diff%36e5/6e4),s:Math.floor(diff%6e4/1e3)};}
 function fmtDate(d){return new Date(d).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});}
 function fmtTime(d){return new Date(d).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true});}
@@ -901,7 +901,8 @@ async function pcgo(){
     return;
   }
   // Save locally first — app works immediately, no waiting for network
-  const localId='u_'+Date.now().toString(36);
+  // Generate proper UUID v4 format for Supabase
+  const localId=([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16));
   const userData={
     id:localId,
     name:LS('ob_name'),
